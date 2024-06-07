@@ -81,6 +81,104 @@
       "chip": "m3-max"
     }
   ],
+  "pricing_configs": [
+    {
+      "14-inch-m3": {
+        "memory": {
+          "8GB unified memory": 0,
+          "16GB unified memory": 800,
+          "24GB unified memory": 1600
+        },
+        "storage": {
+          "512GB SSD Storage": 0,
+          "1TB SSD Storage": 800,
+          "2TB SSD Storage": 2400
+        },
+        "power": {
+          "70W USB-C Power Adapter": 0,
+          "96W USB-C Power Adapter": 80
+        }
+      },
+      "14-inch-m3-pro": {
+        "chip": {
+          "Apple M3 Pro chip with 12‑core CPU, 18‑core GPU and 16‑core Neural Engine": 0,
+          "Apple M3 Max chip with 14‑core CPU, 30‑core GPU and 16‑core Neural Engine": 1600,
+          "Apple M3 Max chip with 16‑core CPU, 40‑core GPU and 16‑core Neural Engine": 2800
+        },
+        "memory": {
+          "18GB unified memory": 0,
+          "36GB unified memory": 1600,
+          "48GB unified memory": 2400,
+          "64GB unified memory": 3200,
+          "96GB unified memory": 4800,
+          "128GB unified memory": 6400
+        },
+        "storage": {
+          "1TB SSD Storage": 0,
+          "2TB SSD Storage": 1600,
+          "4TB SSD Storage": 4000,
+          "8TB SSD Storage": 8800
+        },
+        "power": {
+          "70W USB-C Power Adapter": 0,
+          "96W USB-C Power Adapter": 80
+        }
+      },
+      "16-inch-m3-pro": {
+        "chip": {
+          "Apple M3 Pro chip with 12‑core CPU, 18‑core GPU and 16‑core Neural Engine": 0,
+          "Apple M3 Max chip with 14‑core CPU, 30‑core GPU and 16‑core Neural Engine": 1600,
+          "Apple M3 Max chip with 16‑core CPU, 40‑core GPU and 16‑core Neural Engine": 2800
+        },
+        "memory": {
+          "36GB unified memory": 0,
+          "48GB unified memory": 800,
+          "64GB unified memory": 1600,
+          "96GB unified memory": 3200,
+          "128GB unified memory": 4800
+        },
+        "storage": {
+          "512GB SSD Storage": 0,
+          "1TB SSD Storage": 800,
+          "2TB SSD Storage": 2400,
+          "4TB SSD Storage": 4800,
+          "8TB SSD Storage": 9600
+        }
+      },
+      "14-inch-m3-max": {
+        "chip": {
+          "Apple M3 Max chip with 14‑core CPU, 30‑core GPU and 16‑core Neural Engine": 0,
+          "Apple M3 Max chip with 16‑core CPU, 40‑core GPU and 16‑core Neural Engine": 1200
+        },
+        "memory": {
+          "36GB unified memory": 0,
+          "48GB unified memory": 800,
+          "64GB unified memory": 1600,
+          "96GB unified memory": 3200,
+          "128GB unified memory": 4800
+        },
+        "storage": {
+          "1TB SSD Storage": 0,
+          "2TB SSD Storage": 1600,
+          "4TB SSD Storage": 4000,
+          "8TB SSD Storage": 8800
+        }
+      },
+      "16-inch-m3-max": {
+        "memory": {
+          "48GB unified memory": 0,
+          "64GB unified memory": 800,
+          "128GB unified memory": 4000
+        },
+        "storage": {
+          "1TB SSD Storage": 800,
+          "2TB SSD Storage": 1600,
+          "4TB SSD Storage": 4000,
+          "8TB SSD Storage": 8800
+        }
+      }
+    }
+  ],
   "chip_configs": [
     {
       "name": "Apple M3 chip",

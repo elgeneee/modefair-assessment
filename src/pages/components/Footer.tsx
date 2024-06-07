@@ -79,7 +79,7 @@ export const Footer = ({
             a previous visit to Apple.
           </p>
         </div>
-        <hr className="my-3" />
+        <hr className="my-3 border-[#D2D2D4] border-[0.4]" />
 
         <nav className="flex items-center space-x-2">
           <a href="https://www.apple.com/my/" className="flex items-center">
@@ -108,6 +108,331 @@ export const Footer = ({
             </span>
           </a>
         </nav>
+
+        <div className="hidden grid-cols-2 gap-8 py-7 md:grid-cols-5 lg:grid">
+          <div>
+            <h2 className="mb-3 text-xs font-medium text-black">
+              Shop and Learn
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Store
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Mac
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  iPad
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  iPhone
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Watch
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Airpods
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  TV & Home
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  AirTag
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Accessories
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Gift Cards
+                </a>
+              </li>
+            </ul>
+            <h2 className="mb-3 mt-8 text-xs font-medium text-black">
+              Apple Wallet
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Wallet
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Pay
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="mb-3 text-xs font-medium text-black">Account</h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Manage Your Apple ID
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Store Account
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  iCloud.com
+                </a>
+              </li>
+            </ul>
+            <h2 className="mb-3 mt-8 text-xs font-medium text-black">
+              Entertainment
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple One
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple TV+
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Music
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Arcade
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Fitness+
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Podcasts
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Books
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Store
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="mb-3 text-xs font-medium text-black">Apple Store</h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Store App
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Financing
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Trade In
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Order Status
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Shopping Help
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="mb-3 text-xs font-medium text-black">
+              For Business
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple and Business
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Shop for Business
+                </a>
+              </li>
+            </ul>
+            <h2 className="mb-3 mt-8 text-xs font-medium text-black">
+              For Education
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple and Education
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Shop for University
+                </a>
+              </li>
+            </ul>
+            <h2 className="mb-3 mt-8 text-xs font-medium text-black">
+              For Healthcare
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple in Healthcare
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Health on Apple Watch
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h2 className="mb-3 text-xs font-medium text-black">
+              Apple Values
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Accessibility
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Education
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Environment
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Privacy
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Supply Chain
+                </a>
+              </li>
+            </ul>
+            <h2 className="mb-3 mt-8 text-xs font-medium text-black">
+              About Apple
+            </h2>
+            <ul className="space-y-2 font-light">
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Newsroom
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Apple Leadership
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Career Opportunities
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Investors
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Ethics & Compliance
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Events
+                </a>
+              </li>
+              <li className="">
+                <a href="#" className="hover:underline">
+                  Contact Apple
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="my-4 grid grid-cols-1 divide-y divide-[#D2D2D4] border-y border-[#D2D2D4] lg:hidden">
+          <a className="cursor-pointer py-3 text-black">Shop and Learn</a>
+          <a className="cursor-pointer py-3 text-black">Apple Wallet</a>
+          <a className="cursor-pointer py-3 text-black">Account</a>
+          <a className="cursor-pointer py-3 text-black">Entertainment</a>
+          <a className="cursor-pointer py-3 text-black">Apple Store</a>
+          <a className="cursor-pointer py-3 text-black">For Business</a>
+          <a className="cursor-pointer py-3 text-black">For Education</a>
+          <a className="cursor-pointer py-3 text-black">For Healthcare</a>
+          <a className="cursor-pointer py-3 text-black">Apple Values</a>
+          <a className="cursor-pointer py-3 text-black">About Apple</a>
+        </div>
+        <div>
+          <p>
+            More ways to shop:{" "}
+            <span className="text-[#06C] underline">
+              <a>Find a retailer</a>
+            </span>{" "}
+            near you. Or call 1800-80-6419.
+          </p>
+        </div>
+        <hr className="my-4 hidden border-[#D2D2D4] border-[0.4] lg:block" />
+
+        <div className="flex flex-col pb-10 md:flex-row md:justify-between">
+          <p className="mb-3 md:order-last md:mb-0">Malaysia</p>{" "}
+          {/* Set initial order for smaller screens */}
+          <div className="flex flex-col space-y-1 lg:flex-row lg:space-x-3 lg:space-y-0">
+            {" "}
+            {/* Set initial order for smaller screens */}
+            <p>Copyright © 2024 Apple Inc. All rights reserved.</p>
+            <p>
+              Privacy Policy | Terms of Use | Sales and Refunds | Legal | Site
+              Map
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

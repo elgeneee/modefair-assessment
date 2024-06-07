@@ -10,7 +10,7 @@ import React, {
   useRef,
   useEffect,
 } from "react";
-
+import { useRouter } from "next/router";
 interface Product {
   size: string;
   color_options: string[];
@@ -28,11 +28,11 @@ export const ProductCard = ({
   product: Product;
   className?: string;
 }) => {
+  const router = useRouter();
   const { size, color_options, specs, description, price, chip } = product;
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [imgSrc, setImgSrc] = useState<string>("");
 
-  console.log(selectedColor, color_options[0]);
   useEffect(() => {
     setSelectedColor(color_options[0]);
     setImgSrc(
@@ -52,6 +52,13 @@ export const ProductCard = ({
       `/mbp${size.split("-")[0]}-${selectedColor.toLowerCase().replace(/\s/g, "")}.jpg`,
     );
   }, [selectedColor]);
+
+  const handleSelect = () => {
+    const newSpecs = specs.split("\n");
+    router.replace(
+      `${size}-${selectedColor.toLowerCase().replace(/\s/g, "-")}-apple-${chip}-with-${newSpecs[0].split(" ")[0]}-cpu-and-${newSpecs[1].split(" ")[0]}-gpu-${newSpecs[2].split(" ")[0].toLowerCase()}-memory-${newSpecs[3].split(" ")[0].toLowerCase()}`,
+    );
+  };
 
   return (
     <div className="animate-fadeIn flex-col rounded-lg bg-[#F5F5F7] px-5 text-left font-light">
@@ -127,7 +134,10 @@ export const ProductCard = ({
         </span>
       </div>
       <div>
-        <button className="my-6 w-full rounded-lg bg-[#0171E3] py-2 text-white hover:bg-[#0076DF]">
+        <button
+          className="my-6 w-full rounded-lg bg-[#0171E3] py-2 text-white hover:bg-[#0076DF]"
+          onClick={() => handleSelect()}
+        >
           Select
         </button>
       </div>
@@ -158,7 +168,7 @@ export const ProductCard = ({
           </svg>
         </div>
         <div>
-          <p className="text-base font-semibold">Delivery:</p>
+          <p className="text-base font-medium">Delivery:</p>
           <p className="text-sm">In stock</p>
           <p className="text-sm">Free Shipping</p>
           <p className="text-sm text-[#06C] hover:underline">
