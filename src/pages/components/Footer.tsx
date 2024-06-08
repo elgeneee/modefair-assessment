@@ -1,16 +1,9 @@
-"use client";
-
-// import { cn } from "@/utils/cn";
-import { clsx } from "clsx";
 import React, { useState } from "react";
+import { useHasStickyFooterStore } from "../../../utils/store";
 
-export const Footer = ({
-  children,
-  className,
-}: {
-  children?: React.ReactNode;
-  className?: string;
-}) => {
+export const Footer = () => {
+  const { hasStickyFooter } = useHasStickyFooterStore();
+
   return (
     <div className="flex justify-center bg-[#F5F5F7]">
       <div className="w-full max-w-7xl px-4 py-2 text-left text-xs text-[#767677]">
@@ -73,11 +66,116 @@ export const Footer = ({
             the screens are 14.2 inches and 16.2 inches diagonally (actual
             viewable area is less).
           </p>
-          <p>
-            We use your location to show you delivery options faster. We found
-            your location using your IP address or because you entered it during
-            a previous visit to Apple.
-          </p>
+          {hasStickyFooter && (
+            <>
+              <p>
+                3. Testing conducted by Apple in September and October 2023
+                using pre-production 14-inch MacBook Pro systems with Apple M3
+                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final
+                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
+                project with multiple streams of Apple ProRes 422 video at
+                8192x4320 resolution and 30 frames per second, as well as a
+                1-minute picture-in-picture project with multiple streams of
+                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
+                per second. Performance tests are conducted using specific
+                computer systems and reflect the approximate performance of
+                MacBook Pro.
+              </p>
+              <p>
+                4. Testing conducted by Apple in September and October 2023
+                using pre-production 14-inch MacBook Pro systems with Apple M3
+                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final
+                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
+                project with multiple streams of Apple ProRes 422 video at
+                8192x4320 resolution and 30 frames per second, as well as a
+                1-minute picture-in-picture project with multiple streams of
+                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
+                per second. Performance tests are conducted using specific
+                computer systems and reflect the approximate performance of
+                MacBook Pro.
+              </p>
+              <p>
+                5. Testing conducted by Apple in September and October 2023
+                using pre-production 14-inch MacBook Pro systems with Apple M3
+                Max, 16-core CPU, 40-core GPU, 128GB of RAM and 8TB SSD. Final
+                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
+                project with multiple streams of Apple ProRes 422 video at
+                8192x4320 resolution and 30 frames per second, as well as a
+                1-minute picture-in-picture project with multiple streams of
+                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
+                per second. Performance tests are conducted using specific
+                computer systems and reflect the approximate performance of
+                MacBook Pro.{" "}
+              </p>
+              <p>
+                6. Testing conducted by Apple in September and October 2023
+                using pre-production 16-inch MacBook Pro systems with Apple M3
+                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 512GB SSD, and
+                pre-production 14-inch MacBook Pro systems with Apple M3 Pro,
+                12-core CPU, 18-core GPU, 18GB of RAM and 1TB SSD. 16-inch
+                MacBook Pro systems tested with Apple 140W USB-C Power Adapter
+                (Model A2452), and 14-inch MacBook Pro systems tested with Apple
+                96W USB-C Power Adapter (Model A2166), both with USB-C to
+                MagSafe 3 Cable (Model A2363). Fast-charge testing conducted
+                with drained MacBook Pro units. Charge time varies with settings
+                and environmental factors; actual results will vary.
+              </p>
+              <p>
+                7. Testing conducted by Apple in September and October 2023
+                using pre-production 16-inch MacBook Pro systems with Apple M3
+                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final
+                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
+                project with multiple streams of Apple ProRes 422 video at
+                8192x4320 resolution and 30 frames per second, as well as a
+                1-minute picture-in-picture project with multiple streams of
+                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
+                per second. Performance tests are conducted using specific
+                computer systems and reflect the approximate performance of
+                MacBook Pro.
+              </p>
+              <p>
+                8. Testing conducted by Apple in September and October 2023
+                using pre-production 16-inch MacBook Pro systems with Apple M3
+                Max, 16-core CPU, 40-core GPU, 128GB of RAM and 8TB SSD. Final
+                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
+                project with multiple streams of Apple ProRes 422 video at
+                8192x4320 resolution and 30 frames per second, as well as a
+                1-minute picture-in-picture project with multiple streams of
+                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
+                per second. Performance tests are conducted using specific
+                computer systems and reflect the approximate performance of
+                MacBook Pro.
+              </p>
+            </>
+          )}
+          {hasStickyFooter ? (
+            <>
+              <p>
+                *** Apple TV+ offer available to new and qualified returning
+                subscribers only. RM 29.90/month after free trial. Only one
+                offer per Apple ID and only one offer per family if you’re part
+                of a Family Sharing group, regardless of the number of devices
+                that you or your family purchase. This offer is not available if
+                you or your Family have previously accepted an Apple TV+
+                three-months-free or one-year-free offer. Offer valid for three
+                months after eligible device is activated. Plan automatically
+                renews until cancelled. Restrictions and other terms apply.
+              </p>
+              <p>
+                ^ New subscribers only. RM 29.90/month after free trial. Plan
+                automatically renews after trial until cancelled. We use your
+                location to show you delivery options faster. We found your
+                location using your IP address or because you entered it during
+                a previous visit to Apple.
+              </p>
+            </>
+          ) : (
+            <p>
+              We use your location to show you delivery options faster. We found
+              your location using your IP address or because you entered it
+              during a previous visit to Apple.
+            </p>
+          )}
         </div>
         <hr className="my-3 border-[#D2D2D4] border-[0.4]" />
 
@@ -433,6 +531,7 @@ export const Footer = ({
             </p>
           </div>
         </div>
+        {hasStickyFooter && <div className="h-24" />}
       </div>
     </div>
   );

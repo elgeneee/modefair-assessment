@@ -1,16 +1,17 @@
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import router, { useRouter } from "next/router";
-import { useEffect, useState, ChangeEvent } from "react";
+/* eslint-disable @next/next/no-img-element */
+import { useRouter } from "next/router";
+import { useEffect, useState, ChangeEvent, useRef } from "react";
 import { clsx } from "clsx";
-import { ProductCard } from "../components/product-card";
+
+import { ProductCard } from "../components/ProductCard";
+import { ConfigureCard } from "../components/ConfigureCard";
 import {
   products,
   chip_configs,
   pricing_configs,
 } from "../../../utils/db.json";
-import { ConfigureCard } from "../components/configure";
-import test from "node:test";
+
+import { useHasStickyFooterStore } from "../../../utils/store";
 
 interface Product {
   size: string;
@@ -24,9 +25,14 @@ interface Product {
 export default function Home() {
   const router = useRouter();
   const { id } = router.query;
+  const sizeSelectRef = useRef<HTMLDivElement>(null);
+  //ZUSTAND GLOBAL STATE MANAGEMENT
+  const { setHasStickyFooter } = useHasStickyFooterStore();
+
   //FOR PRODUCTS PAGE
   const [size, setSize] = useState<string>("");
   const [chip, setChip] = useState<string>("");
+  const [isSticky, setIsSticky] = useState<boolean>(false);
   const [macbooks, setMacbooks] = useState<Product[]>();
 
   //FOR PRODUCT DETAIL PAGE
@@ -39,38 +45,14 @@ export default function Home() {
   const [productMemory, setProductMemory] = useState<string>("");
   const [productStorage, setProductStorage] = useState<string>("");
   const [productConfig, setProductConfig] = useState<any>({});
+  const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedKeyboard, setSelectedKeyboard] =
     useState<string>("US English");
 
-  // const
-  // if (
-  //     typeof id === "string" &&
-  //     !id?.startsWith("14-inch") &&
-  //     !id?.startsWith("16-inch")
-  // ) {
-  //     router.replace("14-inch");
-  // }
-
-  // useEffect(() => {
-  //     if (
-  //         typeof id === "string" &&
-  //         !id?.startsWith("14-inch") &&
-  //         !id?.startsWith("16-inch")
-  //     ) {
-  //         router.replace("14-inch");
-  //     }else{
-  //         //check for product page regex
-  //         if (id?.match(/^[0-9]{4}-[0-9]{4}$/)) {
-  //             setIsProductPage(true);
-  //             //setModel
-  //         }
-  //     }
-
-  // }, []);
   const onRouterChange = () => {
     if (typeof id === "string") {
       if (!id?.startsWith("14-inch") && !id?.startsWith("16-inch")) {
-        router.replace("14-inch");
+        router.push("14-inch", undefined, { shallow: true });
       } else {
         //check for product page regex
         const pattern =
@@ -87,7 +69,6 @@ export default function Home() {
               if (key == chip) {
                 const routerMemory = match[6];
                 const routerStorage = match[7];
-
                 if (
                   Object.keys(config[key].memory).some(
                     (memoryKey) =>
@@ -125,15 +106,16 @@ export default function Home() {
           });
 
           if (foundMatchingConfig) {
-            console.log(
-              match[1],
-              match[2],
-              match[3],
-              match[4],
-              match[5],
-              match[6],
-              match[7],
-            );
+            // console.log(
+            //   match[1],
+            //   match[2],
+            //   match[3],
+            //   match[4],
+            //   match[5],
+            //   match[6],
+            //   match[7],
+            // );
+            setHasStickyFooter(true);
 
             setIsProductPage(true);
             setProductSize(match[1]);
@@ -144,9 +126,10 @@ export default function Home() {
             setProductMemory(match[6]);
             setProductStorage(match[7]);
             setProductConfig(currConfig);
+            computeTotalPrice();
           } else {
             cleanupStates();
-            router.replace("14-inch");
+            router.push("14-inch", undefined, { shallow: true });
           }
         } else {
           const data = id.split("-");
@@ -174,8 +157,29 @@ export default function Home() {
     onRouterChange();
   }, []);
 
+  useEffect(() => {
+    // Run the scroll handler once to set initial state
+    const handleScroll = () => {
+      if (sizeSelectRef.current) {
+        const offsetTop = sizeSelectRef.current.offsetTop;
+        if (window.pageYOffset > offsetTop) {
+          setIsSticky(true);
+        }
+        if (window.pageYOffset < offsetTop) {
+          setIsSticky(false);
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [isSticky]);
+
   const cleanupStates = () => {
     setIsProductPage(false);
+    setHasStickyFooter(false);
     setProductSize("");
     setProductColor("");
     setProductChip("");
@@ -185,79 +189,177 @@ export default function Home() {
     setProductStorage("");
   };
 
-  const testREGEX = () => {
-    console.log(2);
-    // Test strings that match the pattern
-    const testStr1 =
-      "Apple M3 Pro chip with 12‑core CPU, 18‑core GPU and 16‑core Neural Engine";
-
-    // const pattern = /^(14|16)-inch-(silver|space-black|space-gray)-apple-(m3|m3-pro|m3-max)-with-(\d+)-core-cpu-and-(\d+)-core-gpu-(\d+gb)-memory-(\d+gb)$/;
-    const regex = /\b\d+\b/g;
-    console.log(testStr1.match(regex));
-  };
-
   useEffect(() => {
-    // setMacbooks([]);
-    // if (typeof id === "string") {
-    //     const data = id.split("-");
-    //     setSize(data[0]);
-    //     setChip(data.slice(2).join("-"));
-    //     //   let tempData = []
-    //     //   tempData = products.filter(
-    //     //     (product) => product.size === `${data[0]}-${data[1]}`,
-    //     //   );
-    //     //   if (data.slice(2).join("-").length > 0) {
-    //     //     tempData = tempData.filter(
-    //     //       (product) => product.chip === data.slice(2).join("-"),
-    //     //     );
-    //     //   }
-    //     //   console.log(tempData)
-    //     //   setMacbooks(tempData);
-    //     // }
-
-    //     setMacbooks((prevMacbooks) => {
-    //         let filteredMacbooks = products.filter(
-    //             (product) => product.size === `${data[0]}-${data[1]}`,
-    //         );
-
-    //         if (data.slice(2).join("-").length > 0) {
-    //             filteredMacbooks = filteredMacbooks.filter(
-    //                 (product) => product.chip === data.slice(2).join("-"),
-    //             );
-    //         }
-
-    //         return filteredMacbooks;
-    //     });
-    // }
-
     onRouterChange();
   }, [id]);
-  console.log(productConfig.chip);
+
+  // FUNCTIONS FOR PRODUCT PAGE
   const handleChipChange = (chip: string) => {
     if (typeof id === "string") {
       const data = id.split("-");
       if (chip === "all") {
-        router.replace(`${data[0]}-${data[1]}`);
+        router.push(`${data[0]}-${data[1]}`, undefined, { shallow: true });
       } else {
-        router.replace(`${data[0]}-${data[1]}-${chip}`);
+        router.push(`${data[0]}-${data[1]}-${chip}`, undefined, {
+          shallow: true,
+        });
       }
     }
   };
 
   const handleSizeChange = (size: string) => {
-    router.replace(size);
+    router.push(size, undefined, { shallow: true });
   };
 
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedKeyboard(event.target.value);
   };
+
+  //FUNCTIONS FOR PRODUCT DETAIL PAGE
+  const handleChipConfigChange = (chipDetail: string) => {
+    const chipRegex = /M3\s*(\w+)/i;
+    const numberRegex = /\b\d+\b/g;
+    if (chipDetail.match(chipRegex) && chipDetail.match(numberRegex)) {
+      const chipMatch = chipDetail.match(chipRegex);
+      const cpuMatch = chipDetail.match(numberRegex);
+      const gpuMatch = chipDetail.match(numberRegex);
+
+      if (typeof id === "string") {
+        //check for product page regex
+        const pattern =
+          /^(14|16)-inch-(silver|space-black|space-gray)-apple-(m3|m3-pro|m3-max)-with-(\d+)-core-cpu-and-(\d+)-core-gpu-(\d+gb)-memory-(\d+(?:tb|gb))$/;
+        const urlValid = id.match(pattern);
+
+        if (urlValid) {
+          let parts = id.split("-");
+          const chip_index = parts.findIndex((part) => part.includes("apple"));
+          if (chip_index !== -1) {
+            parts[chip_index + 1] = chipMatch[0]
+              .toLowerCase()
+              .replace(" ", "-");
+            if (parts[chip_index + 2] !== "with") {
+              parts.splice(chip_index + 2, 1);
+            }
+          }
+
+          const cpu_index = parts.findIndex((part) => part.includes("cpu"));
+          if (cpu_index !== -1) {
+            parts[cpu_index - 2] = cpuMatch[0];
+          }
+
+          const gpu_index = parts.findIndex((part) => part.includes("gpu"));
+          if (gpu_index !== -1) {
+            parts[gpu_index - 2] = gpuMatch[1];
+          }
+          const newUrl = parts.join("-");
+          router.push(newUrl, undefined, { shallow: true });
+        }
+      }
+    }
+  };
+
+  const handleMemoryConfigChange = (memoryDetail: string) => {
+    const memoryMatch = memoryDetail.match(/(\d+)/);
+    if (memoryMatch) {
+      if (typeof id === "string") {
+        //check for product page regex
+        const pattern =
+          /^(14|16)-inch-(silver|space-black|space-gray)-apple-(m3|m3-pro|m3-max)-with-(\d+)-core-cpu-and-(\d+)-core-gpu-(\d+gb)-memory-(\d+(?:tb|gb))$/;
+        const urlValid = id.match(pattern);
+
+        if (urlValid) {
+          let parts = id.split("-");
+          const chip_index = parts.findIndex((part) => part.includes("memory"));
+          if (chip_index !== -1) {
+            parts[chip_index - 1] = memoryMatch[0] + "gb";
+          }
+          const newUrl = parts.join("-");
+          router.push(newUrl, undefined, { shallow: true });
+        }
+      }
+    }
+  };
+
+  const handleStorageConfigChange = (storageDetail: string) => {
+    const storageMatch = storageDetail.match(/(\d+)/);
+    if (storageMatch) {
+      if (typeof id === "string") {
+        //check for product page regex
+        const pattern =
+          /^(14|16)-inch-(silver|space-black|space-gray)-apple-(m3|m3-pro|m3-max)-with-(\d+)-core-cpu-and-(\d+)-core-gpu-(\d+gb)-memory-(\d+(?:tb|gb))$/;
+        const urlValid = id.match(pattern);
+
+        if (urlValid) {
+          let parts = id.split("-");
+          parts[parts.length - 1] = storageDetail.split(" ")[0].toLowerCase();
+          const newUrl = parts.join("-");
+          router.push(newUrl, undefined, { shallow: true });
+        }
+      }
+    }
+  };
+
+  const computeTotalPrice = () => {
+    //read the URL
+    const pattern =
+      /^(14|16)-inch-(silver|space-black|space-gray)-apple-(m3|m3-pro|m3-max)-with-(\d+)-core-cpu-and-(\d+)-core-gpu-(\d+gb)-memory-(\d+(?:tb|gb))$/;
+    if (typeof id === "string") {
+      const match = id.match(pattern);
+      if (match) {
+        const size = match[1];
+        const chip = match[3];
+        const cpu = match[4];
+        const gpu = match[5];
+        const mem = match[6];
+        const store = match[7];
+        let basePrice = 0;
+        pricing_configs.forEach((config: any) => {
+          Object.keys(config).forEach((key) => {
+            //Get base price
+            if (key == `${size}-inch-${chip}`) {
+              basePrice += config[key].base_price;
+              //Check chip
+              if (config[key].chip) {
+                Object.keys(config[key].chip).forEach((chip) => {
+                  const tempArr = chip.match(/\b\d+\b/g) || [];
+                  if (tempArr[0] == cpu && tempArr[1] == gpu) {
+                    basePrice += config[key].chip[chip];
+                    return;
+                  }
+                });
+              }
+              //Check memory
+              Object.keys(config[key].memory).forEach((memory) => {
+                const tempArr = memory.split(" ");
+                if (tempArr[0].toLowerCase() == mem) {
+                  basePrice += config[key].memory[memory];
+                  return;
+                }
+              });
+              //Check storage
+              Object.keys(config[key].storage).forEach((storage) => {
+                const tempArr = storage.split(" ");
+                if (tempArr[0].toLowerCase() == store) {
+                  basePrice += config[key].storage[storage];
+                  return;
+                }
+              });
+            }
+          });
+        });
+        setTotalPrice(basePrice);
+      }
+    }
+  };
+
   return (
-    <main className={`flex min-h-screen flex-col items-center pb-24 pt-14`}>
+    <main
+      className={`flex min-h-screen flex-col items-center px-0 pb-24 pt-14`}
+    >
       {!isProductPage ? (
-        <>
-          <div className="z-10 w-full max-w-7xl text-center">
-            <div className="text-center">
-              <button onClick={() => testREGEX()}>test</button>
+        <div className="w-full px-6">
+          <div className="mx-auto max-w-7xl flex-col justify-center text-center">
+            <div className="mx-auto justify-center text-center">
               <div className="mb-4 text-[2rem] font-semibold">
                 <h1>Choose your new MacBook Pro</h1>
               </div>
@@ -286,31 +388,40 @@ export default function Home() {
                 </span>
               </div>
             </div>
-
-            <div className="mx-auto inline-flex min-h-20 justify-center rounded-xl border border-[#86868B] text-center">
-              <button
+            <div ref={sizeSelectRef}>
+              <div
                 className={clsx(
-                  "min-w-36 max-w-64 rounded-l-xl bg-white px-4 py-2 text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-[#06C]",
-                  size === "14" && "z-10 ring-2 ring-[#06C]",
+                  "mx-auto inline-flex min-h-20 justify-center text-center",
+                  isSticky
+                    ? "fixed left-0 top-0 z-50 min-h-[127px] w-screen bg-[#f9f9f9] py-5"
+                    : "relative min-h-20",
                 )}
-                onClick={() => handleSizeChange("14-inch")}
               >
-                14-inch
-              </button>
-              <button
-                className={clsx(
-                  "min-w-36 max-w-64 rounded-r-xl bg-white px-4 py-2 text-sm font-medium text-black focus:outline-none focus:ring-2 focus:ring-[#06C]",
-                  size === "16" && "ring-2 ring-[#06C]",
-                )}
-                onClick={() => handleSizeChange("16-inch")}
-              >
-                16-inch
-              </button>
+                <button
+                  className={clsx(
+                    "min-w-36 max-w-64 rounded-l-xl border border-[#86868B] bg-white px-4 py-2 text-sm font-medium text-black focus:outline-none focus:ring-1 focus:ring-[#06C]",
+                    size === "14" && "z-10 ring-1 ring-[#06C]",
+                  )}
+                  onClick={() => handleSizeChange("14-inch")}
+                >
+                  14-inch
+                </button>
+                <button
+                  className={clsx(
+                    "min-w-36 max-w-64 rounded-r-xl border-y border-r border-[#86868B] bg-white px-4 py-2 text-sm font-medium text-black focus:outline-none focus:ring-1 focus:ring-[#06C]",
+                    size === "16" && "z-20 border-l ring-1 ring-[#06C]",
+                  )}
+                  onClick={() => handleSizeChange("16-inch")}
+                >
+                  16-inch
+                </button>
+              </div>
             </div>
+
             <div className="mb-8 text-center">
               <p className="mb-4 mt-12 text-xs font-light">Filter by chip:</p>
-              {/* Pills? */}
-              <div className="flex justify-center space-x-2 text-center">
+              {/* Pills */}
+              <div className="flex animate-fadeIn justify-center space-x-2 text-center">
                 <button
                   className={clsx(
                     "rounded-full px-4 py-2 text-xs font-medium focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:ring-offset-white",
@@ -360,7 +471,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {macbooks &&
                 macbooks?.length > 0 &&
                 macbooks.map((macbook, index) => (
@@ -368,91 +479,61 @@ export default function Home() {
                 ))}
             </div>
             <div className="mt-20">
-              <p className="text-4xl font-semibold">What&apos;s in the Box</p>
-              {/* <div className="bg-[#FAFAFA] relative">
-                        <ul className="flex space-x-4">
-                            <li className="flex items-center relative">
-                                <img src="/mbp14.jpg" alt="Icon 1" className="mr-2 absolute bottom-0" />
-
-                            </li>
-                            <li className="flex items-center relative">
-                                <img src="/magsafe-cable.jpg" alt="Icon 2" className="mr-2 absolute bottom-0" />
-                            </li>
-                            <li className="flex items-center relative">
-                                <img src="/70w-adapter.jpg" alt="Icon 3" className="mr-2 absolute bottom-0" />
-
-                            </li>
-                        </ul>
-
-                    </div> */}
-              <ul className="m-0 flex w-full justify-around">
-                <li className="grow basis-0 text-center">
-                  <div className="flex h-full flex-col justify-between bg-[#fafafa]">
+              <p className="text-4xl font-semibold pt-11 pb-10">What&apos;s in the Box</p>
+              <ul className="flex w-full justify-around text-sm">
+                <li className="text-center">
+                  <div className="flex h-[392px] relative justify-between bg-[#fafafa]">
                     <img
-                      src="/mbp14.jpg"
+                      src={`/mbp${size}-witb-${size == "14" ? "silver" : "spaceblack"}.jpg`}
                       loading="lazy"
                       width="608"
                       height="392"
-                      className="h-[392px] w-[608px] object-cover align-top"
+                      alt="macbook"
+                      className="h-[392px] w-[608px] object-cover "
                     />
-                    <div>16-inch Macbook Pro</div>
                   </div>
+                  <div className="px-4 pt-5">16-inch Macbook Pro</div>
                 </li>
                 <li className="grow basis-0 text-center">
-                  <div className="flex h-full flex-col justify-between">
+                  <div className="flex h-[392px] relative justify-between bg-[#fafafa]">
                     <img
-                      src="/magsafe-cable.jpg"
+                      src={`/magsafe-cable-${size == "14" ? "silver" : "spaceblack"}.jpg`}
                       loading="lazy"
                       width="45"
                       height="392"
-                      className="mx-auto h-[392px] w-[45px] bg-[#fafafa] object-cover align-top"
+                      alt="magsafe"
+                      className="mx-auto h-[392px] w-[45px] bg-[#fafafa] object-cover"
                     />
-                    <div className="mt-0 pt-0">
-                      USB-C to MagSafe 3 Cable (2m)
-                    </div>
+
+                  </div>
+                  <div className="px-4 pt-5">
+                    USB-C to MagSafe 3 Cable (2m)
                   </div>
                 </li>
                 <li className="grow basis-0 text-center">
-                  <div className="flex h-full flex-col justify-between bg-[#fafafa]">
+                  <div className="flex h-[392px] relative  justify-between bg-[#fafafa]">
                     <img
                       src="/70w-adapter.jpg"
                       loading="lazy"
                       width="219"
                       height="392"
+                      alt="adapter"
                       className="h-[392px] w-full object-cover align-top"
                     />
-                    <div>70W Adapter</div>
                   </div>
+                  <div className="px-4 pt-5">70W Adapter</div>
+
                 </li>
               </ul>
             </div>
 
-            <div className="relative h-72 bg-black">
-              <img
-                src="/mbp14.jpg"
-                loading="lazy"
-                width="608"
-                height="392"
-                className="-translate-x-1/2overflow-hidden absolute bottom-0 left-1/2 transform text-center"
-              />
-            </div>
-            <div>
-              <div>
-                <img
-                  src="/70w-adapter.jpg"
-                  loading="lazy"
-                  // width="219"
-                  // height="392"
-                  className="absolute bottom-0 left-1/2 w-20 -translate-x-1/2 transform overflow-hidden text-center"
-                />
-              </div>
-            </div>
-            <div className="mt-12 rounded-lg bg-[#FAFAFA] p-10">
+            {/* WHAT TO CONSIDER */}
+            <div className="mt-24 rounded-lg bg-[#FAFAFA] p-10">
               <p className="mt-4 text-3xl font-semibold">
                 What to consider when choosing your MacBook Pro.
               </p>
               <p className="mt-4">Configure your laptop on the next step.</p>
-              <div className="mt-14 grid grid-cols-4 gap-4">
+              <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 font-light">
                 {chip_configs.map((chip, index) => (
                   <ConfigureCard key={index} chip={chip} />
                 ))}
@@ -469,6 +550,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* COMPARE MAC MODELS */}
           <div className="mt-6 w-screen bg-[#FAFAFA] py-20 text-center">
             <p className="mb-5 text-4xl font-semibold">Compare Mac models</p>
             <span className="font-light text-[#06C] hover:underline">
@@ -476,10 +558,11 @@ export default function Home() {
                 Choose the best Mac for you
               </a>
             </span>
-            <img src="/mac-compare.png" className="mx-auto h-80 text-center" />
+            <img src="/mac-compare.png" alt="Mac compare" className="mx-auto h-80 text-center" />
           </div>
 
-          <div className="my-20 text-center">
+          {/* APPLE CARE */}
+          <div className="mx-auto mt-20 max-w-7xl text-center">
             <img
               src="/applecare.jpg"
               alt="Apple Care"
@@ -515,12 +598,12 @@ export default function Home() {
               </span>
             </p>
           </div>
-        </>
+        </div>
       ) : (
-        <div className="w-full">
+        <div className="w-full animate-fadeIn">
           <div className="mx-auto flex max-w-7xl justify-center px-6">
             <div className="max-w-1/2 relative w-1/2 flex-col text-center text-sm">
-              <div className="sticky top-0">
+              <div className="sticky top-0 mb-36">
                 <img
                   src={`/mbp-${productSize}-${productColor.replace("-", "")}-cto-hero.jpg`}
                   alt="Macbook"
@@ -625,13 +708,35 @@ export default function Home() {
                     </span>
                     <div className="mt-3 space-y-3">
                       {Object.entries(productConfig.chip).map(
-                        ([key, value]) => (
+                        ([key, value]: [string, any]) => (
                           <button
                             key={key}
-                            className="flex min-h-16 w-full items-center justify-between rounded-xl border border-[#86868B] p-4 text-left focus:outline-none focus:ring-1 focus:ring-[#0071E3]"
+                            onClick={() => handleChipConfigChange(key)}
+                            className={clsx(
+                              "flex min-h-20 w-full items-center justify-between rounded-xl border p-4 text-left",
+                              key.toLowerCase() ==
+                                `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase()
+                                ? "border-2 border-[#0071E3]"
+                                : "border-[#86868B]",
+                            )}
                           >
-                            <p className="w-1/2 text-base font-medium">{key}</p>
-                            <p className="w-1/2 text-right"></p>
+                            <p className="w-1/2 text-left text-base font-medium">
+                              {key}
+                            </p>
+                            <p
+                              className={clsx(
+                                "w-1/2 text-right text-base",
+                                value == 0 && "hidden",
+                                key.toLowerCase() ==
+                                `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase() &&
+                                "hidden",
+                              )}
+                            >
+                              + RM{" "}
+                              {value
+                                .toFixed(2)
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            </p>
                           </button>
                         ),
                       )}
@@ -647,15 +752,42 @@ export default function Home() {
                   </a>
                 </span>
                 <div className="mt-3 space-y-3">
-                  {Object.entries(productConfig.memory).map(([key, value]) => (
-                    <button
-                      key={key}
-                      className="flex min-h-16 w-full items-center justify-between rounded-xl border border-[#86868B] p-4 text-left focus:outline-none focus:ring-1 focus:ring-[#0071E3]"
-                    >
-                      <p className="w-1/2 text-base font-medium">{key}</p>
-                      <p className="w-1/2 text-right"></p>
-                    </button>
-                  ))}
+                  {Object.entries(productConfig.memory).map(
+                    ([key, value]: [string, any]) => (
+                      <button
+                        key={key}
+                        disabled={
+                          `${productSize}-inch-${productChip}` ==
+                          "14-inch-m3-pro" &&
+                          ["48gb", "64gb", "96gb", "128gb"].includes(
+                            key.toLowerCase().split(" ")[0],
+                          )
+                        }
+                        onClick={() => handleMemoryConfigChange(key)}
+                        className={clsx(
+                          "flex min-h-20 w-full items-center justify-between rounded-xl border p-4 text-left disabled:opacity-40",
+                          productMemory.toLowerCase() ==
+                            key.toLowerCase().split(" ")[0]
+                            ? "border-2 border-[#0071E3]"
+                            : "border-[#86868B]",
+                        )}
+                      >
+                        <p className="w-1/2 text-base font-medium">{key}</p>
+                        <p
+                          className={clsx(
+                            "w-1/2 text-right text-base",
+                            productMemory.toLowerCase() ==
+                            key.toLowerCase().split(" ")[0] && "hidden",
+                          )}
+                        >
+                          + RM{" "}
+                          {value
+                            .toFixed(2)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        </p>
+                      </button>
+                    ),
+                  )}
                 </div>
               </div>
               <div className="mt-3">
@@ -666,23 +798,85 @@ export default function Home() {
                   </a>
                 </span>
                 <div className="mt-3 space-y-3">
-                  {Object.entries(productConfig.storage).map(([key, value]) => (
-                    <button
-                      key={key}
-                      className="flex min-h-16 w-full items-center justify-between rounded-xl border border-[#86868B] p-4 text-left focus:outline-none focus:ring-1 focus:ring-[#0071E3]"
-                    >
-                      <p className="w-1/2 text-base font-medium">{key}</p>
-                      <p className="w-1/2 text-right"></p>
-                    </button>
-                  ))}
+                  {Object.entries(productConfig.storage).map(
+                    ([key, value]: [string, any]) => (
+                      <button
+                        key={key}
+                        onClick={() => handleStorageConfigChange(key)}
+                        disabled={
+                          `${productSize}-inch-${productChip}` ==
+                          "14-inch-m3-pro" &&
+                          ["8tb"].includes(key.toLowerCase().split(" ")[0])
+                        }
+                        className={clsx(
+                          "flex min-h-20 w-full items-center justify-between rounded-xl border p-4 text-left disabled:opacity-40",
+                          productStorage.toLowerCase() ==
+                            key.toLowerCase().split(" ")[0]
+                            ? "border-2 border-[#0071E3]"
+                            : "border-[#86868B]",
+                        )}
+                      >
+                        <p className="w-1/2 text-base font-medium">{key}</p>
+                        <p
+                          className={clsx(
+                            "w-1/2 text-right text-base",
+                            productStorage.toLowerCase() ==
+                            key.toLowerCase().split(" ")[0] && "hidden",
+                          )}
+                        >
+                          + RM{" "}
+                          {value
+                            .toFixed(2)
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                        </p>
+                      </button>
+                    ),
+                  )}
                 </div>
               </div>
+              {productConfig.power &&
+                Object.keys(productConfig.power).length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-base font-semibold">Power Adapter</p>
+                    <span className="text-[#06C] hover:underline">
+                      <a href="https://contactretail.apple.com">
+                        Which power adapter is right for you?
+                      </a>
+                    </span>
+                    <div className="mt-3 space-y-3">
+                      {Object.entries(productConfig.power).map(
+                        ([key, value]: [string, any]) => (
+                          <button
+                            key={key}
+                            onClick={() => handleChipConfigChange(key)}
+                            className="flex min-h-20 w-full items-center justify-between rounded-xl border border-[#86868B] p-4"
+                          >
+                            <p className="w-1/2 text-left text-base font-medium">
+                              {key}
+                            </p>
+                            <p
+                              className={clsx(
+                                "w-1/2 text-right text-base",
+                                value == 0 && "hidden",
+                              )}
+                            >
+                              + RM{" "}
+                              {value
+                                .toFixed(2)
+                                .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                            </p>
+                          </button>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                )}
               <div className="mt-3">
                 <p className="text-base font-semibold">Keyboard Language</p>
                 <span className="text-[#06C] hover:underline">
                   <a href="https://contactretail.apple.com">Learn more</a>
                 </span>
-                <div className="relative">
+                <div className="relative mt-3">
                   <select
                     id="countries"
                     onChange={handleSelectChange}
@@ -735,31 +929,99 @@ export default function Home() {
               </div>
             </div>
           </div>
+          <div className="relative mx-auto mt-10 flex h-[422px] w-full items-center justify-center bg-black lg:max-w-7xl">
+            <div className="absolute left-3 z-10 ml-4 text-white md:left-20 lg:left-36">
+              <img
+                src="/apple-tv-plus-logo.png"
+                alt="Apple TV"
+                className="h-5 w-12"
+              />
+              <p className="mt-4 text-3xl font-medium">
+                Get 3 months of
+                <br />
+                Apple TV+ free when
+                <br />
+                you buy a Mac.***
+              </p>
+              <div className="mt-4 flex items-center space-x-7">
+                <span className="text-[#06C] hover:underline">
+                  <a href="https://contactretail.apple.com">Try it free</a>
+                </span>
+                <span className="text-[#06C] hover:underline">
+                  <a href="https://contactretail.apple.com">Learn more</a>
+                </span>{" "}
+              </div>
+            </div>
+            <img
+              src="/apple-tv-plus-mac-argylle.jpg"
+              alt="Apple TV"
+              width={1200}
+              height={422}
+              className="aspect-h-376 absolute right-0 aspect-[1070/376] max-h-[422px] max-w-[1200px] overflow-clip text-right"
+            />
+          </div>
           <div className="fixed bottom-0 z-50 min-h-32 w-screen animate-fadeIn border-t border-[#d2d2d7] bg-[#f5f5f7] px-6 duration-300">
-            <div className="mx-auto flex max-w-7xl space-x-2 pt-4">
-              <div className="w-7">
+            <div className="mx-auto flex max-w-7xl justify-between space-x-2 pt-4">
+              <div className="flex">
+                <div className="w-7">
+                  <svg
+                    className="as-svgicon-rtl-mirrored as-svgicon as-svgicon-boxtruck as-svgicon-reduced as-svgicon-boxtruckreduced"
+                    viewBox="0 0 25 25"
+                    role="img"
+                    aria-hidden="true"
+                    width="25px"
+                    height="25px"
+                  >
+                    <path fill="none" d="M0 0h25v25H0z"></path>
+                    <path
+                      fill="#1d1d1f"
+                      d="m23.482 12.847-2.92-3.209A1.947 1.947 0 0 0 18.985 9H17V6.495a2.5 2.5 0 0 0-2.5-2.5h-11a2.5 2.5 0 0 0-2.5 2.5v9.75a2.5 2.5 0 0 0 2.5 2.5h.548A2.746 2.746 0 0 0 6.75 21.02 2.618 2.618 0 0 0 9.422 19h6.681a2.744 2.744 0 0 0 5.347-.23h.735A1.656 1.656 0 0 0 24 16.98v-2.808a1.937 1.937 0 0 0-.518-1.325ZM8.426 18.745a1.74 1.74 0 0 1-3.352 0 1.577 1.577 0 0 1 .015-1 1.738 1.738 0 0 1 3.322 0 1.578 1.578 0 0 1 .015 1ZM9.447 18a2.726 2.726 0 0 0-5.394-.255H3.5a1.502 1.502 0 0 1-1.5-1.5v-9.75a1.502 1.502 0 0 1 1.5-1.5h11a1.502 1.502 0 0 1 1.5 1.5V18Zm10.972.77a1.738 1.738 0 0 1-3.337 0 1.573 1.573 0 0 1 0-1 1.742 1.742 0 1 1 3.337 1ZM23 16.98c0 .569-.229.79-.815.79h-.735A2.73 2.73 0 0 0 17 16.165V10h1.986a.976.976 0 0 1 .838.314l2.927 3.214a.95.95 0 0 1 .249.644Zm-1.324-3.36a.512.512 0 0 1 .174.38h-3.306a.499.499 0 0 1-.544-.528V11h1.073a.76.76 0 0 1 .594.268Z"
+                    ></path>
+                  </svg>
+                </div>
+                <div className="font-light">
+                  <p className="text-base font-medium">Ships:</p>
+                  <p className="text-sm">In stock</p>
+                  <p className="text-sm">Free Shipping</p>
+                  <p className="text-sm text-[#06C] hover:underline">
+                    Get delivery dates
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-4">
+                <div className="flex flex-col text-right text-2xl font-semibold">
+                  <p>
+                    RM
+                    {totalPrice
+                      .toFixed(2)
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    <span>or</span>
+                  </p>
+                  <p>
+                    RM{" "}
+                    {(totalPrice / 24)
+                      .toFixed(2)
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                    /mo. for 24 mo.*
+                  </p>
+                  <p className="text-sm font-light text-[#06C] hover:underline">
+                    Explore monthly instalment options &gt;
+                  </p>
+                </div>
+                <button className="rounded-lg bg-[#0071E3] px-4 py-2 text-sm font-light text-white">
+                  Add to Bag
+                </button>
                 <svg
-                  className="as-svgicon-rtl-mirrored as-svgicon as-svgicon-boxtruck as-svgicon-reduced as-svgicon-boxtruckreduced"
-                  viewBox="0 0 25 25"
+                  width="35"
+                  height="35"
+                  style={{ fill: "#0071E3" }}
+                  className="as-svgicon as-svgicon-bookmark as-svgicon-base as-svgicon-bookmarkbase"
                   role="img"
                   aria-hidden="true"
-                  width="25px"
-                  height="25px"
                 >
-                  <path fill="none" d="M0 0h25v25H0z"></path>
-                  <path
-                    fill="#1d1d1f"
-                    d="m23.482 12.847-2.92-3.209A1.947 1.947 0 0 0 18.985 9H17V6.495a2.5 2.5 0 0 0-2.5-2.5h-11a2.5 2.5 0 0 0-2.5 2.5v9.75a2.5 2.5 0 0 0 2.5 2.5h.548A2.746 2.746 0 0 0 6.75 21.02 2.618 2.618 0 0 0 9.422 19h6.681a2.744 2.744 0 0 0 5.347-.23h.735A1.656 1.656 0 0 0 24 16.98v-2.808a1.937 1.937 0 0 0-.518-1.325ZM8.426 18.745a1.74 1.74 0 0 1-3.352 0 1.577 1.577 0 0 1 .015-1 1.738 1.738 0 0 1 3.322 0 1.578 1.578 0 0 1 .015 1ZM9.447 18a2.726 2.726 0 0 0-5.394-.255H3.5a1.502 1.502 0 0 1-1.5-1.5v-9.75a1.502 1.502 0 0 1 1.5-1.5h11a1.502 1.502 0 0 1 1.5 1.5V18Zm10.972.77a1.738 1.738 0 0 1-3.337 0 1.573 1.573 0 0 1 0-1 1.742 1.742 0 1 1 3.337 1ZM23 16.98c0 .569-.229.79-.815.79h-.735A2.73 2.73 0 0 0 17 16.165V10h1.986a.976.976 0 0 1 .838.314l2.927 3.214a.95.95 0 0 1 .249.644Zm-1.324-3.36a.512.512 0 0 1 .174.38h-3.306a.499.499 0 0 1-.544-.528V11h1.073a.76.76 0 0 1 .594.268Z"
-                  ></path>
+                  <path fill="none" d="M0 0h35v35H0z"></path>
+                  <path d="M21.952 6.433a2.157 2.157 0 0 1 1.567.481A2.228 2.228 0 0 1 24 8.516v19.866a.709.709 0 0 1-.018.178.7.7 0 0 1-.058-.013 8.985 8.985 0 0 1-.757-.674l-4.866-4.901a1.111 1.111 0 0 0-1.602 0l-4.857 4.891a7.25 7.25 0 0 1-.754.676.145.145 0 0 1-.053.028h-.015a.681.681 0 0 1-.02-.185V8.516a2.228 2.228 0 0 1 .48-1.602 2.158 2.158 0 0 1 1.568-.48h8.904m0-1h-8.904a3.077 3.077 0 0 0-2.278.776A3.144 3.144 0 0 0 10 8.516v19.866a1.276 1.276 0 0 0 .276.868.956.956 0 0 0 .76.317 1.073 1.073 0 0 0 .632-.213 8.377 8.377 0 0 0 .874-.776l4.866-4.9a.115.115 0 0 1 .184 0l4.866 4.9a10.454 10.454 0 0 0 .868.77 1.048 1.048 0 0 0 .639.219.956.956 0 0 0 .76-.317 1.276 1.276 0 0 0 .275-.868V8.516a3.144 3.144 0 0 0-.77-2.306 3.077 3.077 0 0 0-2.278-.776Z"></path>
                 </svg>
-              </div>
-              <div className="font-light">
-                <p className="text-base font-medium">Delivery:</p>
-                <p className="text-sm">In stock</p>
-                <p className="text-sm">Free Shipping</p>
-                <p className="text-sm text-[#06C] hover:underline">
-                  Get delivery dates
-                </p>
               </div>
             </div>
           </div>

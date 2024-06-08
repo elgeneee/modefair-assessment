@@ -1,13 +1,8 @@
 "use client";
-/* eslint-disable @next/next/no-img-element */
-// import { cn } from "@/utils/cn";
 import { clsx } from "clsx";
 import Image from "next/image";
 import React, {
-  createContext,
   useState,
-  useContext,
-  useRef,
   useEffect,
 } from "react";
 import { useRouter } from "next/router";
@@ -20,13 +15,9 @@ interface Product {
   chip: string;
 }
 export const ProductCard = ({
-  children,
   product,
-  className,
 }: {
-  children?: React.ReactNode;
   product: Product;
-  className?: string;
 }) => {
   const router = useRouter();
   const { size, color_options, specs, description, price, chip } = product;
@@ -111,7 +102,9 @@ export const ProductCard = ({
           {description}
         </p>
 
-        <p className="mt-3 text-[1.5rem] font-semibold">RM {price}</p>
+        <p className="mt-3 text-[1.5rem] font-semibold">
+          RM {price.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+        </p>
 
         <p className="my-3 text-sm font-light">or</p>
 

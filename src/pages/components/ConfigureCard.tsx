@@ -1,8 +1,5 @@
 "use client";
-
-// import { cn } from "@/utils/cn";
-import { clsx } from "clsx";
-import React, { useState } from "react";
+import React from "react";
 
 interface Chip {
   name: string;
@@ -11,13 +8,9 @@ interface Chip {
   points: string[];
 }
 export const ConfigureCard = ({
-  children,
   chip,
-  className,
 }: {
-  children?: React.ReactNode;
   chip: Chip;
-  className?: string;
 }) => {
   const { name, img, description, points } = chip;
 

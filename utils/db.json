@@ -97,7 +97,8 @@
         "power": {
           "70W USB-C Power Adapter": 0,
           "96W USB-C Power Adapter": 80
-        }
+        },
+        "base_price": 7499.0
       },
       "14-inch-m3-pro": {
         "chip": {
@@ -122,7 +123,8 @@
         "power": {
           "70W USB-C Power Adapter": 0,
           "96W USB-C Power Adapter": 80
-        }
+        },
+        "base_price": 9999.0
       },
       "16-inch-m3-pro": {
         "chip": {
@@ -143,7 +145,8 @@
           "2TB SSD Storage": 2400,
           "4TB SSD Storage": 4800,
           "8TB SSD Storage": 9600
-        }
+        },
+        "base_price": 11999.0
       },
       "14-inch-m3-max": {
         "chip": {
@@ -162,7 +165,8 @@
           "2TB SSD Storage": 1600,
           "4TB SSD Storage": 4000,
           "8TB SSD Storage": 8800
-        }
+        },
+        "base_price": 14799.0
       },
       "16-inch-m3-max": {
         "memory": {
@@ -175,7 +179,8 @@
           "2TB SSD Storage": 1600,
           "4TB SSD Storage": 4000,
           "8TB SSD Storage": 8800
-        }
+        },
+        "base_price": 17999.0
       }
     }
   ],
