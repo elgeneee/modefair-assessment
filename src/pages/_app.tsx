@@ -5,9 +5,9 @@ import { Banner } from "./components/Banner";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Banner />
+      {/* <Banner /> */}
       <Component {...pageProps} />
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

@@ -7,11 +7,7 @@ interface Chip {
   description: string;
   points: string[];
 }
-export const ConfigureCard = ({
-  chip,
-}: {
-  chip: Chip;
-}) => {
+export const ConfigureCard = ({ chip }: { chip: Chip }) => {
   const { name, img, description, points } = chip;
 
   return (

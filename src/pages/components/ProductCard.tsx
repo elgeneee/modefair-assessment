@@ -1,10 +1,7 @@
 "use client";
 import { clsx } from "clsx";
 import Image from "next/image";
-import React, {
-  useState,
-  useEffect,
-} from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 interface Product {
   size: string;
@@ -14,11 +11,7 @@ interface Product {
   price: number;
   chip: string;
 }
-export const ProductCard = ({
-  product,
-}: {
-  product: Product;
-}) => {
+export const ProductCard = ({ product }: { product: Product }) => {
   const router = useRouter();
   const { size, color_options, specs, description, price, chip } = product;
   const [selectedColor, setSelectedColor] = useState<string>("");
