@@ -2,10 +2,7 @@
 
 ## Assessment 1
 
-
 ## Assessment 2
-
-First, run the development server:
 
 ## Live URL
 

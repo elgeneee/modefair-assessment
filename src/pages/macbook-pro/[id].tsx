@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState, ChangeEvent, useRef } from "react";
 import { clsx } from "clsx";
 import { AppLayout } from "../components/AppLayout";
@@ -14,6 +15,7 @@ import {
 import { useHasStickyFooterStore } from "../../../utils/store";
 
 interface Product {
+  id: string;
   size: string;
   color_options: string[];
   specs: string;
@@ -22,9 +24,20 @@ interface Product {
   chip: string;
 }
 
+interface ProductConfig {
+  id?: string;
+  chip?: any;
+  memory?: any;
+  storage?: any;
+  power?: any;
+  base_price?: number;
+}
+
 export default function Home() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { id } = router.query;
+  const productId = searchParams.get("id");
   const sizeSelectRef = useRef<HTMLDivElement>(null);
   //ZUSTAND GLOBAL STATE MANAGEMENT
   const { setHasStickyFooter } = useHasStickyFooterStore();
@@ -44,6 +57,7 @@ export default function Home() {
   const [productGPU, setProductGPU] = useState<string>("");
   const [productMemory, setProductMemory] = useState<string>("");
   const [productStorage, setProductStorage] = useState<string>("");
+  const [productPower, setProductPower] = useState<string>("");
   const [productConfig, setProductConfig] = useState<any>({});
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [selectedKeyboard, setSelectedKeyboard] =
@@ -58,17 +72,17 @@ export default function Home() {
         const pattern =
           /^(14|16)-inch-(silver|space-black|space-gray)-apple-(m3|m3-pro|m3-max)-with-(\d+)-core-cpu-and-(\d+)-core-gpu-(\d+gb)-memory-(\d+(?:tb|gb))$/;
         const match = id.match(pattern);
-        if (match) {
+        if (match && productId) {
           //check if config exist in price_config
-
           const chip = `${match[1]}-inch-${match[3]}`;
           let foundMatchingConfig = false;
-          let currConfig = {};
+          let currConfig: ProductConfig = {};
           pricing_configs.forEach((config: any) => {
             Object.keys(config).forEach((key) => {
-              if (key == chip) {
+              if (productId == config[key].id) {
                 const routerMemory = match[6];
                 const routerStorage = match[7];
+                foundMatchingConfig = true;
                 if (
                   Object.keys(config[key].memory).some(
                     (memoryKey) =>
@@ -104,6 +118,47 @@ export default function Home() {
               }
             });
           });
+          // pricing_configs.forEach((config: any) => {
+          //   Object.keys(config).forEach((key) => {
+          //     if (key == chip) {
+
+          //       const routerMemory = match[6];
+          //       const routerStorage = match[7];
+          //       if (
+          //         Object.keys(config[key].memory).some(
+          //           (memoryKey) =>
+          //             memoryKey.toLowerCase().split(" ")[0] ===
+          //             routerMemory.toLowerCase(),
+          //         ) &&
+          //         Object.keys(config[key].storage).some(
+          //           (storageKey) =>
+          //             storageKey.toLowerCase().split(" ")[0] ===
+          //             routerStorage.toLowerCase(),
+          //         )
+          //       ) {
+          //         foundMatchingConfig = true;
+          //         currConfig = config[key];
+          //         if (config[key].chip && Object.keys(config[key].chip)) {
+          //           foundMatchingConfig = false;
+          //           currConfig = {};
+          //           const routerCpu = match[4];
+          //           const routerGpu = match[5];
+          //           //check
+          //           Object.keys(config[key].chip).forEach((chip) => {
+          //             const tempArr = chip.match(/\b\d+\b/g) || [];
+          //             if (routerCpu == tempArr[0] && routerGpu == tempArr[1]) {
+          //               //correct
+          //               foundMatchingConfig = true;
+          //               currConfig = config[key];
+          //               return;
+          //             }
+          //           });
+          //         }
+          //         return;
+          //       }
+          //     }
+          //   });
+          // });
 
           if (foundMatchingConfig) {
             // console.log(
@@ -116,7 +171,6 @@ export default function Home() {
             //   match[7],
             // );
             setHasStickyFooter(true);
-
             setIsProductPage(true);
             setProductSize(match[1]);
             setProductColor(match[2]);
@@ -126,6 +180,9 @@ export default function Home() {
             setProductMemory(match[6]);
             setProductStorage(match[7]);
             setProductConfig(currConfig);
+            if (currConfig.power) {
+              setProductPower(Object.keys(currConfig.power)[0]);
+            }
             computeTotalPrice();
           } else {
             cleanupStates();
@@ -234,7 +291,7 @@ export default function Home() {
           let parts = id.split("-");
           const chip_index = parts.findIndex((part) => part.includes("apple"));
           if (chip_index !== -1) {
-            parts[chip_index + 1] = chipMatch[0]
+            parts[chip_index + 1] = chipMatch![0]
               .toLowerCase()
               .replace(" ", "-");
             if (parts[chip_index + 2] !== "with") {
@@ -244,14 +301,30 @@ export default function Home() {
 
           const cpu_index = parts.findIndex((part) => part.includes("cpu"));
           if (cpu_index !== -1) {
-            parts[cpu_index - 2] = cpuMatch[0];
+            parts[cpu_index - 2] = cpuMatch![0];
           }
 
           const gpu_index = parts.findIndex((part) => part.includes("gpu"));
           if (gpu_index !== -1) {
-            parts[gpu_index - 2] = gpuMatch[1];
+            parts[gpu_index - 2] = gpuMatch![1];
           }
-          const newUrl = parts.join("-");
+
+          //EDGE CASES: handle memory selections
+          if (chipMatch![0] == "M3 Max" && cpuMatch![0] == "14" && gpuMatch![1] == "30") {
+            const memory_index = parts.findIndex((part) => part.includes("memory"));
+            if (memory_index !== -1) {
+              parts[memory_index - 1] = "36gb";
+            }
+          }
+
+          if (chipMatch![0] == "M3 Max" && cpuMatch![0] == "16" && gpuMatch![1] == "40") {
+            const memory_index = parts.findIndex((part) => part.includes("memory"));
+            if (memory_index !== -1) {
+              parts[memory_index - 1] = "48gb";
+            }
+          }
+
+          const newUrl = parts.join("-") + `?id=${productId}`;
           router.push(newUrl, undefined, { shallow: true });
         }
       }
@@ -273,7 +346,7 @@ export default function Home() {
           if (chip_index !== -1) {
             parts[chip_index - 1] = memoryMatch[0] + "gb";
           }
-          const newUrl = parts.join("-");
+          const newUrl = parts.join("-") + `?id=${productId}`;
           router.push(newUrl, undefined, { shallow: true });
         }
       }
@@ -292,11 +365,28 @@ export default function Home() {
         if (urlValid) {
           let parts = id.split("-");
           parts[parts.length - 1] = storageDetail.split(" ")[0].toLowerCase();
-          const newUrl = parts.join("-");
+          const newUrl = parts.join("-") + `?id=${productId}`;
           router.push(newUrl, undefined, { shallow: true });
         }
       }
     }
+  };
+
+  const handlePowerConfigChange = (powerDetail: string, price: number) => {
+    if (powerDetail !== productPower) {
+      if (
+        parseInt(powerDetail.match(/\d+/)![0]) >
+        parseInt(productPower.match(/\d+/)![0])
+      ) {
+        setTotalPrice((prevPrice) => prevPrice + price);
+      } else if (
+        parseInt(powerDetail.match(/\d+/)![0]) <
+        parseInt(productPower.match(/\d+/)![0])
+      ) {
+        setTotalPrice((prevPrice) => prevPrice - 80);
+      }
+    }
+    setProductPower(powerDetail);
   };
 
   const computeTotalPrice = () => {
@@ -316,7 +406,7 @@ export default function Home() {
         pricing_configs.forEach((config: any) => {
           Object.keys(config).forEach((key) => {
             //Get base price
-            if (key == `${size}-inch-${chip}`) {
+            if (productId == config[key].id) {
               basePrice += config[key].base_price;
               //Check chip
               if (config[key].chip) {
@@ -737,8 +827,8 @@ export default function Home() {
                                   "w-1/2 text-right text-base",
                                   value == 0 && "hidden",
                                   key.toLowerCase() ==
-                                    `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase() &&
-                                    "hidden",
+                                  `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase() &&
+                                  "hidden",
                                 )}
                               >
                                 + RM{" "}
@@ -750,6 +840,20 @@ export default function Home() {
                           ),
                         )}
                       </div>
+                      {["4", "5", "6", "7", "8", "9"].includes(
+                        productConfig.id,
+                      ) && (
+                          <div className="p-4 font-light text-[#78787E]">
+                            <p>
+                              Select M3 Max with 30-core GPU to add 96GB of
+                              memory.
+                            </p>
+                            <p>
+                              Select M3 Max with 40-core GPU to add 48GB, 64GB, or
+                              128GB.
+                            </p>
+                          </div>
+                        )}
                     </div>
                   )}
 
@@ -766,11 +870,20 @@ export default function Home() {
                         <button
                           key={key}
                           disabled={
-                            `${productSize}-inch-${productChip}` ==
-                              "14-inch-m3-pro" &&
-                            ["48gb", "64gb", "96gb", "128gb"].includes(
-                              key.toLowerCase().split(" ")[0],
-                            )
+                            (productChip == "m3-pro" &&
+                              ["48gb", "64gb", "96gb", "128gb"].includes(
+                                key.toLowerCase().split(" ")[0],
+                              )) ||
+                            (productChip == "m3-max" &&
+                              productGPU == "30" &&
+                              ["18gb", "48gb", "64gb", "128gb"].includes(
+                                key.toLowerCase().split(" ")[0],
+                              )) ||
+                            (productChip == "m3-max" &&
+                              productGPU == "40" &&
+                              ["18gb", "36gb", "96gb"].includes(
+                                key.toLowerCase().split(" ")[0],
+                              ))
                           }
                           onClick={() => handleMemoryConfigChange(key)}
                           className={clsx(
@@ -786,11 +899,22 @@ export default function Home() {
                             className={clsx(
                               "w-1/2 text-right text-base",
                               productMemory.toLowerCase() ==
-                                key.toLowerCase().split(" ")[0] && "hidden",
+                              key.toLowerCase().split(" ")[0] && "hidden",
                             )}
                           >
-                            + RM{" "}
-                            {value
+                            {value >
+                              productConfig.memory[
+                              `${productMemory.toUpperCase()} unified memory`
+                              ]
+                              ? "+"
+                              : "-"}
+                            RM{" "}
+                            {Math.abs(
+                              parseFloat(value) -
+                              productConfig.memory[
+                              `${productMemory.toUpperCase()} unified memory`
+                              ],
+                            )
                               .toFixed(2)
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                           </p>
@@ -798,6 +922,16 @@ export default function Home() {
                       ),
                     )}
                   </div>
+                  {["4", "5", "6", "7", "8", "9"].includes(
+                    productConfig.id,
+                  ) && (
+                      <div className="p-4 font-light text-[#78787E]">
+                        <p>
+                          96GB available with M3 Max with 30-core GPU. 48GB, 64GB,
+                          or 128GB available with M3 Max with 40-core GPU.
+                        </p>
+                      </div>
+                    )}
                 </div>
                 <div className="mt-3">
                   <p className="text-base font-semibold">Storage</p>
@@ -813,8 +947,7 @@ export default function Home() {
                           key={key}
                           onClick={() => handleStorageConfigChange(key)}
                           disabled={
-                            `${productSize}-inch-${productChip}` ==
-                              "14-inch-m3-pro" &&
+                            productChip == "m3-pro" &&
                             ["8tb"].includes(key.toLowerCase().split(" ")[0])
                           }
                           className={clsx(
@@ -830,11 +963,22 @@ export default function Home() {
                             className={clsx(
                               "w-1/2 text-right text-base",
                               productStorage.toLowerCase() ==
-                                key.toLowerCase().split(" ")[0] && "hidden",
+                              key.toLowerCase().split(" ")[0] && "hidden",
                             )}
                           >
-                            + RM{" "}
-                            {value
+                            {value >
+                              productConfig.storage[
+                              `${productStorage.toUpperCase()} SSD Storage`
+                              ]
+                              ? "+"
+                              : "-"}{" "}
+                            RM{" "}
+                            {Math.abs(
+                              parseFloat(value) -
+                              productConfig.storage[
+                              `${productStorage.toUpperCase()} SSD Storage`
+                              ],
+                            )
                               .toFixed(2)
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                           </p>
@@ -842,6 +986,13 @@ export default function Home() {
                       ),
                     )}
                   </div>
+                  {["4", "5", "7", "8", "9", "10"].includes(
+                    productConfig.id,
+                  ) && (
+                      <p className="p-4 text-[#828286]">
+                        8TB available with M3 Max chip.
+                      </p>
+                    )}
                 </div>
                 {productConfig.power &&
                   Object.keys(productConfig.power).length > 0 && (
@@ -852,13 +1003,34 @@ export default function Home() {
                           Which power adapter is right for you?
                         </a>
                       </span>
+                      {/* {
+                        ["4", "5", "6", "7", "8", "9"].includes(productConfig.id) &&
+                        <div className="font-light text-xs bg-[#FAFAFC] p-3 rounded-lg border-[#D2D2D7] border mt-4">
+                            <p>Based on your configuration, we’ve selected 70W USB-C Power Adapter.</p>
+                            <p>Please review this selection.</p>
+                        </div>
+                      } */}
                       <div className="mt-3 space-y-3">
                         {Object.entries(productConfig.power).map(
                           ([key, value]: [string, any]) => (
                             <button
                               key={key}
-                              onClick={() => handleChipConfigChange(key)}
-                              className="flex min-h-20 w-full items-center justify-between rounded-xl border border-[#86868B] p-4"
+                              onClick={() =>
+                                handlePowerConfigChange(key, value)
+                              }
+                              disabled={
+                                (productChip == "m3-max" &&
+                                  key.split(" ")[0] == "70W") ||
+                                (productChip == "m3-pro" &&
+                                  productCPU == "12" &&
+                                  key.split(" ")[0] == "70W")
+                              }
+                              className={clsx(
+                                "flex min-h-20 w-full items-center justify-between rounded-xl border border-[#86868B] p-4 disabled:opacity-40",
+                                productPower == key
+                                  ? "border-2 border-[#0071E3]"
+                                  : "border-[#86868B]",
+                              )}
                             >
                               <p className="w-1/2 text-left text-base font-medium">
                                 {key}
@@ -866,13 +1038,27 @@ export default function Home() {
                               <p
                                 className={clsx(
                                   "w-1/2 text-right text-base",
-                                  value == 0 && "hidden",
+                                  productPower !== key && "hidden",
                                 )}
                               >
-                                + RM{" "}
-                                {value
-                                  .toFixed(2)
-                                  .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                {(productChip == "m3-max") ||
+                                  (productChip == "m3-pro" &&
+                                    productCPU == "12") && key.split(" ")[0] == "96W" ? (
+                                  "Included"
+                                ) : (
+                                  <>
+                                    {value > productConfig.power[productPower]
+                                      ? "+"
+                                      : "-"}{" "}
+                                    RM{" "}
+                                    {Math.abs(
+                                      parseFloat(value) -
+                                      productConfig.power[productPower],
+                                    )
+                                      .toFixed(2)
+                                      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+                                  </>
+                                )}
                               </p>
                             </button>
                           ),

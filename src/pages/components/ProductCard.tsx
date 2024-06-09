@@ -4,6 +4,7 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 interface Product {
+  id: string;
   size: string;
   color_options: string[];
   specs: string;
@@ -13,7 +14,7 @@ interface Product {
 }
 export const ProductCard = ({ product }: { product: Product }) => {
   const router = useRouter();
-  const { size, color_options, specs, description, price, chip } = product;
+  const { id, size, color_options, specs, description, price, chip } = product;
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [imgSrc, setImgSrc] = useState<string>("");
 
@@ -39,8 +40,8 @@ export const ProductCard = ({ product }: { product: Product }) => {
 
   const handleSelect = () => {
     const newSpecs = specs.split("\n");
-    router.replace(
-      `${size}-${selectedColor.toLowerCase().replace(/\s/g, "-")}-apple-${chip}-with-${newSpecs[0].split(" ")[0]}-cpu-and-${newSpecs[1].split(" ")[0]}-gpu-${newSpecs[2].split(" ")[0].toLowerCase()}-memory-${newSpecs[3].split(" ")[0].toLowerCase()}`,
+    router.push(
+      `${size}-${selectedColor.toLowerCase().replace(/\s/g, "-")}-apple-${chip}-with-${newSpecs[0].split(" ")[0]}-cpu-and-${newSpecs[1].split(" ")[0]}-gpu-${newSpecs[2].split(" ")[0].toLowerCase()}-memory-${newSpecs[3].split(" ")[0].toLowerCase()}?id=${id}`,
     );
   };
 
