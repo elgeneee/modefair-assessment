@@ -6,6 +6,8 @@
 3. [Datagrid](https://modefair-alpha.vercel.app/assessment2)
    
 ## Assessment 1
+https://github.com/elgeneee/modefair-assessment/assets/36974531/c32a4d5c-42e2-4d6c-9a03-74485633ecdf
+
 
 ## Assessment 2
 https://github.com/elgeneee/modefair-assessment/assets/36974531/e56d34ee-8e98-4220-b868-3e69ed9befd8
