@@ -76,7 +76,7 @@ export const Grid: React.FC<GridProps> = ({
     return data.map((item, index) => (
       <React.Fragment key={item.ProductID}>
         <tr
-          className={`bg-white hover:bg-[#ECECEC] ${index % 2 !== 0 ? "bg-[#F6F6F6]" : "bg-[#FFFFFF]"}`}
+          className={`hover:bg-[#ECECEC] ${index % 2 !== 0 ? "bg-[#F6F6F6]" : "bg-[#FFFFFF]"}`}
         >
           <td className="px-3 py-4 text-center">
             <button
