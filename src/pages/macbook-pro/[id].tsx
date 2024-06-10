@@ -5,11 +5,7 @@ import { useEffect, useState, ChangeEvent, useRef } from "react";
 import { AppLayout } from "../components/AppLayout";
 import { ProductCard } from "../components/ProductCard";
 import { ConfigureCard } from "../components/ConfigureCard";
-import {
-  products,
-  chip_configs,
-  pricing_configs,
-} from "../../../utils/db.json";
+import db from "../../../utils/db.json";
 import {
   useHasStickyFooterStore,
   useConfigurationBannerStore,
@@ -35,6 +31,7 @@ interface ProductConfig {
 }
 
 export default function Home() {
+  const { products, chip_configs, pricing_configs } = db;
   const router = useRouter();
   const searchParams = useSearchParams();
   const { id } = router.query;
