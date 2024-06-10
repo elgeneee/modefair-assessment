@@ -6,12 +6,10 @@ export default function Home() {
 
   useEffect(() => {
     router.push("/macbook-pro/14-inch");
-  }, [])
-  
+  }, []);
+
   return (
-    <main
-      className="flex min-h-screen flex-col items-center justify-between p-24"
-    >
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <div>Redirecting...</div>
     </main>
   );

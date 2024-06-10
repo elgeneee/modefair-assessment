@@ -437,8 +437,8 @@ export default function Home() {
         className={`flex min-h-screen flex-col items-center px-0 pb-24 pt-14`}
       >
         {!isProductPage ? (
-          <div className="w-full px-6">
-            <div className="mx-auto max-w-7xl flex-col justify-center text-center">
+          <div className="w-full">
+            <div className="mx-auto max-w-7xl flex-col justify-center px-6 text-center">
               <div className="mx-auto justify-center text-center">
                 <div className="mb-4 text-[2rem] font-semibold">
                   <h1>Choose your new MacBook Pro</h1>
@@ -631,7 +631,7 @@ export default function Home() {
             </div>
 
             {/* COMPARE MAC MODELS */}
-            <div className="mt-6 w-screen bg-[#FAFAFA] py-20 text-center">
+            <div className="mt-6 bg-[#FAFAFA] py-20 text-center">
               <p className="mb-5 text-4xl font-semibold">Compare Mac models</p>
               <span className="font-light text-[#06C] hover:underline">
                 <a target="_blank" href="https://contactretail.apple.com/">
@@ -641,12 +641,12 @@ export default function Home() {
               <img
                 src="/mac-compare.png"
                 alt="Mac compare"
-                className="mx-auto h-80 text-center"
+                className="mx-auto h-[355px] w-[960px] object-cover text-center"
               />
             </div>
 
             {/* APPLE CARE */}
-            <div className="mx-auto mt-20 max-w-7xl text-center">
+            <div className="mx-auto mt-20 max-w-7xl px-6 text-center">
               <img
                 src="/applecare.jpg"
                 alt="Apple Care"
@@ -883,8 +883,8 @@ export default function Home() {
                                   "w-1/2 text-right text-base",
                                   value == 0 && "hidden",
                                   key.toLowerCase() ==
-                                  `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase() &&
-                                  "hidden",
+                                    `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase() &&
+                                    "hidden",
                                 )}
                               >
                                 + RM{" "}
@@ -899,17 +899,17 @@ export default function Home() {
                       {["4", "5", "6", "7", "8", "9"].includes(
                         productConfig.id,
                       ) && (
-                          <div className="p-4 font-light text-[#78787E]">
-                            <p>
-                              Select M3 Max with 30-core GPU to add 96GB of
-                              memory.
-                            </p>
-                            <p>
-                              Select M3 Max with 40-core GPU to add 48GB, 64GB, or
-                              128GB.
-                            </p>
-                          </div>
-                        )}
+                        <div className="p-4 font-light text-[#78787E]">
+                          <p>
+                            Select M3 Max with 30-core GPU to add 96GB of
+                            memory.
+                          </p>
+                          <p>
+                            Select M3 Max with 40-core GPU to add 48GB, 64GB, or
+                            128GB.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -976,21 +976,21 @@ export default function Home() {
                             className={clsx(
                               "w-1/2 text-right text-base",
                               productMemory.toLowerCase() ==
-                              key.toLowerCase().split(" ")[0] && "hidden",
+                                key.toLowerCase().split(" ")[0] && "hidden",
                             )}
                           >
                             {value >
-                              productConfig.memory[
+                            productConfig.memory[
                               `${productMemory.toUpperCase()} unified memory`
-                              ]
+                            ]
                               ? "+"
                               : "-"}
                             RM{" "}
                             {Math.abs(
                               parseFloat(value) -
-                              productConfig.memory[
-                              `${productMemory.toUpperCase()} unified memory`
-                              ],
+                                productConfig.memory[
+                                  `${productMemory.toUpperCase()} unified memory`
+                                ],
                             )
                               .toFixed(2)
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -1002,13 +1002,13 @@ export default function Home() {
                   {["4", "5", "6", "7", "8", "9"].includes(
                     productConfig.id,
                   ) && (
-                      <div className="p-4 font-light text-[#78787E]">
-                        <p>
-                          96GB available with M3 Max with 30-core GPU. 48GB, 64GB,
-                          or 128GB available with M3 Max with 40-core GPU.
-                        </p>
-                      </div>
-                    )}
+                    <div className="p-4 font-light text-[#78787E]">
+                      <p>
+                        96GB available with M3 Max with 30-core GPU. 48GB, 64GB,
+                        or 128GB available with M3 Max with 40-core GPU.
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="mt-3">
                   <p className="text-base font-semibold">Storage</p>
@@ -1061,21 +1061,21 @@ export default function Home() {
                             className={clsx(
                               "w-1/2 text-right text-base",
                               productStorage.toLowerCase() ==
-                              key.toLowerCase().split(" ")[0] && "hidden",
+                                key.toLowerCase().split(" ")[0] && "hidden",
                             )}
                           >
                             {value >
-                              productConfig.storage[
+                            productConfig.storage[
                               `${productStorage.toUpperCase()} SSD Storage`
-                              ]
+                            ]
                               ? "+"
                               : "-"}{" "}
                             RM{" "}
                             {Math.abs(
                               parseFloat(value) -
-                              productConfig.storage[
-                              `${productStorage.toUpperCase()} SSD Storage`
-                              ],
+                                productConfig.storage[
+                                  `${productStorage.toUpperCase()} SSD Storage`
+                                ],
                             )
                               .toFixed(2)
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -1087,10 +1087,10 @@ export default function Home() {
                   {["4", "5", "7", "8", "9", "10"].includes(
                     productConfig.id,
                   ) && (
-                      <p className="p-4 text-[#828286]">
-                        8TB available with M3 Max chip.
-                      </p>
-                    )}
+                    <p className="p-4 text-[#828286]">
+                      8TB available with M3 Max chip.
+                    </p>
+                  )}
                 </div>
                 {productConfig.power &&
                   Object.keys(productConfig.power).length > 0 && (
@@ -1130,24 +1130,24 @@ export default function Home() {
                                 className={clsx(
                                   "w-1/2 text-right text-base",
                                   key === "70W USB-C Power Adapter" &&
-                                  (productChip === "m3-max" ||
-                                    (productChip === "m3-pro" &&
-                                      productCPU === "12")) &&
-                                  "hidden",
+                                    (productChip === "m3-max" ||
+                                      (productChip === "m3-pro" &&
+                                        productCPU === "12")) &&
+                                    "hidden",
 
                                   productPower === key &&
-                                  !(
-                                    productChip === "m3-max" ||
-                                    (productChip === "m3-pro" &&
-                                      productCPU === "12")
-                                  ) &&
-                                  "hidden",
+                                    !(
+                                      productChip === "m3-max" ||
+                                      (productChip === "m3-pro" &&
+                                        productCPU === "12")
+                                    ) &&
+                                    "hidden",
                                 )}
                               >
                                 {productChip == "m3-max" ||
-                                  (productChip == "m3-pro" &&
-                                    productCPU == "12" &&
-                                    key.split(" ")[0] == "96W") ? (
+                                (productChip == "m3-pro" &&
+                                  productCPU == "12" &&
+                                  key.split(" ")[0] == "96W") ? (
                                   "Included"
                                 ) : (
                                   <>
@@ -1157,7 +1157,7 @@ export default function Home() {
                                     RM{" "}
                                     {Math.abs(
                                       parseFloat(value) -
-                                      productConfig.power[productPower],
+                                        productConfig.power[productPower],
                                     )
                                       .toFixed(2)
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
