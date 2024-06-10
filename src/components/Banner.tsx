@@ -2,8 +2,8 @@
 
 import { clsx } from "clsx";
 import React from "react";
-import { useConfigurationBannerStore } from "../../../utils/store";
-export const Banner = () => {
+import { useConfigurationBannerStore } from "../../utils/store";
+const Banner = () => {
   const { bannerConfig } = useConfigurationBannerStore();
   return (
     <div>
@@ -274,3 +274,5 @@ export const Banner = () => {
     </div>
   );
 };
+
+export default Banner;

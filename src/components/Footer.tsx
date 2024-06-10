@@ -1,7 +1,7 @@
 import React from "react";
-import { useHasStickyFooterStore } from "../../../utils/store";
+import { useHasStickyFooterStore } from "../../utils/store";
 
-export const Footer = () => {
+const Footer = () => {
   const { hasStickyFooter } = useHasStickyFooterStore();
 
   return (
@@ -543,3 +543,5 @@ export const Footer = () => {
     </div>
   );
 };
+
+export default Footer;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import products from "../../utils/products.json";
-import { Grid, GridColumn, GridExpandChangeEvent } from "./components/Grid";
+import { Grid, GridColumn, GridExpandChangeEvent } from "../components/Grid";
 import { Product } from "../../utils/interfaces";
 export default function Assessment2() {
   const [data, setData] = useState<Product[]>(products);

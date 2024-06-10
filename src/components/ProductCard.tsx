@@ -11,7 +11,7 @@ interface Product {
   price: number;
   chip: string;
 }
-export const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({ product }: { product: Product }) => {
   const router = useRouter();
   const { id, size, color_options, specs, description, price, chip } = product;
   const [selectedColor, setSelectedColor] = useState<string>("");
@@ -228,3 +228,5 @@ export const ProductCard = ({ product }: { product: Product }) => {
     </div>
   );
 };
+
+export default ProductCard;

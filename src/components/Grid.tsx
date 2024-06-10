@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, ReactElement } from "react";
-import { cn } from "../../../utils/utils";
+import { cn } from "../../utils/utils";
 
 export interface GridProps {
   data: any[];
