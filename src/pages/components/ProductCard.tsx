@@ -1,6 +1,5 @@
 "use client";
 import { clsx } from "clsx";
-import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 interface Product {
@@ -47,24 +46,28 @@ export const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <div className="animate-fadeIn flex-col rounded-lg bg-[#F5F5F7] px-5 text-left font-light">
-      {/* <img
-                src={`/mbp${size.split("-")[0]}-${selectedColor.toLowerCase().replace(/\s/g, "")}.jpg`}
-                alt="MacBook Pro"
-                className="text-center"
-            /> */}
-
-      <Image
+      <img
         src={imgSrc}
-        width={500}
-        height={500}
-        alt="Picture of the author"
+        alt="MacBook Pro"
+        className="text-center"
         onError={(e) =>
           setImgSrc(
             `/mbp${size.split("-")[0]}-${color_options[0].toLowerCase().replace(/\s/g, "")}.jpg`,
           )
         }
       />
-
+      {/* <Image
+        src={imgSrc}
+        width={500}
+        height={500}
+        alt="macbook"
+        loading="lazy"
+        onError={(e) =>
+          setImgSrc(
+            `/mbp${size.split("-")[0]}-${color_options[0].toLowerCase().replace(/\s/g, "")}.jpg`,
+          )
+        }
+      /> */}
       <div>
         <p className="text-xs">{selectedColor}</p>
         {color_options.map((color, index) => (
@@ -105,19 +108,64 @@ export const ProductCard = ({ product }: { product: Product }) => {
         <p className="mb-2 text-[1.5rem] font-semibold leading-7">
           RM {(price / 12).toFixed(2)}/mo. for 24mo.*
         </p>
-        <span className="text-sm text-[#06C] hover:underline">
-          <a href="https://contactretail.apple.com">
+        <span className="flex text-sm text-[#06C] hover:underline">
+          <a
+            href="https://contactretail.apple.com"
+            className="flex items-center space-x-2"
+          >
             Explore monthly instalment options
+            <span className="ml-2">&rsaquo;</span>
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-circle-plus"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 12h8" />
+                <path d="M12 8v8" />
+              </svg>
+            </span>
           </a>
         </span>
 
         <p className="mt-4 text-base font-medium">Add a trade-in</p>
-        <p className="text-sm">
+        <p className="mb-2 text-sm">
           Get credit towards a new Mac when you trade in your eligible computer.
           Or recycle it for free.**
         </p>
         <span className="text-sm text-[#06C] hover:underline">
-          <a href="https://contactretail.apple.com">Get started</a>
+          <a
+            href="https://contactretail.apple.com"
+            className="flex items-center"
+          >
+            Get started
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-circle-plus ml-2"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M8 12h8" />
+                <path d="M12 8v8" />
+              </svg>
+            </span>
+          </a>
         </span>
       </div>
       <div>
@@ -130,11 +178,25 @@ export const ProductCard = ({ product }: { product: Product }) => {
       </div>
       <div>
         <p className="text-base font-medium">Need a moment?</p>
-        <p className="text-sm">
+        <p className="pb-2 text-sm">
           Keep all your selections by saving this device to Your Saves, then
           come back anytime and pick up right where you left off.
         </p>
-        <p className="text-sm text-[#06C] hover:underline">Save for later</p>
+        <p className="flex items-center text-sm text-[#06C] hover:underline">
+          <span>
+            <svg
+              width="21"
+              height="21"
+              style={{ fill: "#06C" }}
+              role="img"
+              aria-hidden="true"
+            >
+              <path fill="none" d="M0 0h21v21H0z"></path>
+              <path d="M12.8 4.25a1.202 1.202 0 0 1 1.2 1.2v10.818l-2.738-2.71a1.085 1.085 0 0 0-1.524 0L7 16.269V5.45a1.202 1.202 0 0 1 1.2-1.2h4.6m0-1H8.2A2.2 2.2 0 0 0 6 5.45v11.588a.768.768 0 0 0 .166.522.573.573 0 0 0 .455.19.644.644 0 0 0 .38-.128 5.008 5.008 0 0 0 .524-.467l2.916-2.885a.084.084 0 0 1 .118 0l2.916 2.886a6.364 6.364 0 0 0 .52.463.628.628 0 0 0 .384.131.573.573 0 0 0 .456-.19.768.768 0 0 0 .165-.522V5.45a2.2 2.2 0 0 0-2.2-2.2Z"></path>
+            </svg>
+          </span>
+          Save for later
+        </p>
       </div>
 
       <div className="my-10 flex space-x-2">

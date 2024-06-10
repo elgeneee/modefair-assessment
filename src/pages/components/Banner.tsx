@@ -1,16 +1,10 @@
 "use client";
 
-// import { cn } from "@/utils/cn";
 import { clsx } from "clsx";
-import React, { useState } from "react";
-
-export const Banner = ({
-  children,
-  className,
-}: {
-  children?: React.ReactNode;
-  className?: string;
-}) => {
+import React from "react";
+import { useConfigurationBannerStore } from "../../../utils/store";
+export const Banner = () => {
+  const { bannerConfig } = useConfigurationBannerStore();
   return (
     <div>
       <div className="relative z-10 mx-auto flex-col items-center justify-center border-b border-[#D8D8D9] bg-white px-6 text-center">
@@ -149,9 +143,9 @@ export const Banner = ({
                       className="globalnav-menutrigger-bread globalnav-menutrigger-bread-bottom"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       points="2 12, 16 12"
                     >
                       <animate
@@ -182,9 +176,9 @@ export const Banner = ({
                       className="globalnav-menutrigger-bread globalnav-menutrigger-bread-top"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="1.2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="1.2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       points="2 5, 16 5"
                     >
                       <animate
@@ -246,9 +240,9 @@ export const Banner = ({
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="#6e6e73"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className="lucide lucide-chevron-down"
               >
                 <path d="m6 9 6 6 6-6" />
@@ -257,11 +251,23 @@ export const Banner = ({
           </div>
         </header>
       </div>
-      <div className="z-0 bg-[#F5F5F7] py-4 text-center text-sm font-light duration-700 animate-in slide-in-from-top">
+      <div
+        className={clsx(
+          "sticky top-0 z-[999] bg-[#0071E3] py-4 text-center text-white duration-300",
+          bannerConfig == "" ? "hidden" : "animate-fadeIn",
+        )}
+      >
+        {bannerConfig}
+      </div>
+
+      <div className="z-0 animate-slide-in-from-top bg-[#F5F5F7] py-4 text-center text-sm font-light">
         <p>
-          Pay 0% interest for up to 24 months. Terms apply.◊◊{" "}
+          Pay 0% interest for up to 24 months. Terms apply.
+          <sup className="text-[8px]">◊◊</sup>{" "}
           <span className="text-[#06C] hover:underline">
-            <a>Learn more</a>
+            <a>
+              Learn more<span className="ml-2">&rsaquo;</span>
+            </a>
           </span>
         </p>
       </div>

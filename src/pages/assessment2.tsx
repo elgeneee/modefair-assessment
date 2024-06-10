@@ -5,8 +5,6 @@ import { Product } from "../../utils/interfaces";
 export default function Assessment2() {
   const [data, setData] = useState<Product[]>(products);
 
-  console.log(products);
-
   const DetailComponent = ({ dataItem }: { dataItem: any }) => (
     <div className="space-y-5">
       <p>

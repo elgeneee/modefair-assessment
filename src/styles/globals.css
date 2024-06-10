@@ -24,4 +24,14 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .slide-in-from-top {
+    --tw-enter-translate-y: -100%;
+    animation: slide-in-from-top;
+  }
+}
+
+.icon-pluscircle::before,
+.icon-pluscircle::after {
+  content: "";
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHasStickyFooterStore } from "../../../utils/store";
 
 export const Footer = () => {
@@ -15,7 +15,7 @@ export const Footer = () => {
             pricing will be for the whole order and provided by your bank
             subject to your bank’s terms and conditions.
           </p>
-          <p>
+          <p className="font-medium">
             ◊◊ Terms & Conditions of 0% interest for 6-, 12- and 24-month
             instalment payment plans{" "}
           </p>
@@ -56,7 +56,18 @@ export const Footer = () => {
             devices. Restrictions and limitations may apply. For recycling
             eligible equipment Terms and restrictions may apply.
           </p>
-          <p>
+          <ul className="list-decimal space-y-2 pl-3">
+            <li>
+              1GB = 1 billion bytes and 1TB = 1 trillion bytes; actual formatted
+              capacity less.
+            </li>
+            <li>
+              The displays on the 14-inch and 16-inch MacBook Pro have rounded
+              corners at the top. When measured as a standard rectangular shape,
+              the screens are 14.2 inches and 16.2 inches diagonally (actual
+              viewable area is less).
+            </li>
+            {/* <p>
             1. 1GB = 1 billion bytes and 1TB = 1 trillion bytes; actual
             formatted capacity less.
           </p>
@@ -65,89 +76,78 @@ export const Footer = () => {
             corners at the top. When measured as a standard rectangular shape,
             the screens are 14.2 inches and 16.2 inches diagonally (actual
             viewable area is less).
-          </p>
-          {hasStickyFooter && (
-            <>
-              <p>
-                3. Testing conducted by Apple in September and October 2023
-                using pre-production 14-inch MacBook Pro systems with Apple M3
-                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final
-                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
-                project with multiple streams of Apple ProRes 422 video at
-                8192x4320 resolution and 30 frames per second, as well as a
-                1-minute picture-in-picture project with multiple streams of
-                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
-                per second. Performance tests are conducted using specific
-                computer systems and reflect the approximate performance of
-                MacBook Pro.
-              </p>
-              <p>
-                4. Testing conducted by Apple in September and October 2023
-                using pre-production 14-inch MacBook Pro systems with Apple M3
-                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final
-                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
-                project with multiple streams of Apple ProRes 422 video at
-                8192x4320 resolution and 30 frames per second, as well as a
-                1-minute picture-in-picture project with multiple streams of
-                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
-                per second. Performance tests are conducted using specific
-                computer systems and reflect the approximate performance of
-                MacBook Pro.
-              </p>
-              <p>
-                5. Testing conducted by Apple in September and October 2023
-                using pre-production 14-inch MacBook Pro systems with Apple M3
-                Max, 16-core CPU, 40-core GPU, 128GB of RAM and 8TB SSD. Final
-                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
-                project with multiple streams of Apple ProRes 422 video at
-                8192x4320 resolution and 30 frames per second, as well as a
-                1-minute picture-in-picture project with multiple streams of
-                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
-                per second. Performance tests are conducted using specific
-                computer systems and reflect the approximate performance of
-                MacBook Pro.{" "}
-              </p>
-              <p>
-                6. Testing conducted by Apple in September and October 2023
-                using pre-production 16-inch MacBook Pro systems with Apple M3
-                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 512GB SSD, and
-                pre-production 14-inch MacBook Pro systems with Apple M3 Pro,
-                12-core CPU, 18-core GPU, 18GB of RAM and 1TB SSD. 16-inch
-                MacBook Pro systems tested with Apple 140W USB-C Power Adapter
-                (Model A2452), and 14-inch MacBook Pro systems tested with Apple
-                96W USB-C Power Adapter (Model A2166), both with USB-C to
-                MagSafe 3 Cable (Model A2363). Fast-charge testing conducted
-                with drained MacBook Pro units. Charge time varies with settings
-                and environmental factors; actual results will vary.
-              </p>
-              <p>
-                7. Testing conducted by Apple in September and October 2023
-                using pre-production 16-inch MacBook Pro systems with Apple M3
-                Pro, 12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final
-                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
-                project with multiple streams of Apple ProRes 422 video at
-                8192x4320 resolution and 30 frames per second, as well as a
-                1-minute picture-in-picture project with multiple streams of
-                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
-                per second. Performance tests are conducted using specific
-                computer systems and reflect the approximate performance of
-                MacBook Pro.
-              </p>
-              <p>
-                8. Testing conducted by Apple in September and October 2023
-                using pre-production 16-inch MacBook Pro systems with Apple M3
-                Max, 16-core CPU, 40-core GPU, 128GB of RAM and 8TB SSD. Final
-                Cut Pro 10.6.9 tested using a 1-minute picture-in-picture
-                project with multiple streams of Apple ProRes 422 video at
-                8192x4320 resolution and 30 frames per second, as well as a
-                1-minute picture-in-picture project with multiple streams of
-                Apple ProRes 422 video at 3840x2160 resolution and 29.97 frames
-                per second. Performance tests are conducted using specific
-                computer systems and reflect the approximate performance of
-                MacBook Pro.
-              </p>
-            </>
-          )}
+          </p> */}
+            {hasStickyFooter && (
+              <React.Fragment>
+                <li>
+                  Testing conducted by Apple in September and October 2023 using
+                  pre-production 14-inch MacBook Pro systems with Apple M3 Pro,
+                  12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final Cut
+                  Pro 10.6.9 tested using a 1-minute picture-in-picture project
+                  with multiple streams of Apple ProRes 422 video at 8192x4320
+                  resolution and 30 frames per second, as well as a 1-minute
+                  picture-in-picture project with multiple streams of Apple
+                  ProRes 422 video at 3840x2160 resolution and 29.97 frames per
+                  second. Performance tests are conducted using specific
+                  computer systems and reflect the approximate performance of
+                  MacBook Pro.
+                </li>
+                <li>
+                  Testing conducted by Apple in September and October 2023 using
+                  pre-production 14-inch MacBook Pro systems with Apple M3 Max,
+                  16-core CPU, 40-core GPU, 128GB of RAM and 8TB SSD. Final Cut
+                  Pro 10.6.9 tested using a 1-minute picture-in-picture project
+                  with multiple streams of Apple ProRes 422 video at 8192x4320
+                  resolution and 30 frames per second, as well as a 1-minute
+                  picture-in-picture project with multiple streams of Apple
+                  ProRes 422 video at 3840x2160 resolution and 29.97 frames per
+                  second. Performance tests are conducted using specific
+                  computer systems and reflect the approximate performance of
+                  MacBook Pro.
+                </li>
+                <li>
+                  Testing conducted by Apple in September and October 2023 using
+                  pre-production 16-inch MacBook Pro systems with Apple M3 Pro,
+                  12-core CPU, 18-core GPU, 36GB of RAM and 512GB SSD, and
+                  pre-production 14-inch MacBook Pro systems with Apple M3 Pro,
+                  12-core CPU, 18-core GPU, 18GB of RAM and 1TB SSD. 16-inch
+                  MacBook Pro systems tested with Apple 140W USB-C Power Adapter
+                  (Model A2452), and 14-inch MacBook Pro systems tested with
+                  Apple 96W USB-C Power Adapter (Model A2166), both with USB-C
+                  to MagSafe 3 Cable (Model A2363). Fast-charge testing
+                  conducted with drained MacBook Pro units. Charge time varies
+                  with settings and environmental factors; actual results will
+                  vary.
+                </li>
+                <li>
+                  Testing conducted by Apple in September and October 2023 using
+                  pre-production 16-inch MacBook Pro systems with Apple M3 Pro,
+                  12-core CPU, 18-core GPU, 36GB of RAM and 4TB SSD. Final Cut
+                  Pro 10.6.9 tested using a 1-minute picture-in-picture project
+                  with multiple streams of Apple ProRes 422 video at 8192x4320
+                  resolution and 30 frames per second, as well as a 1-minute
+                  picture-in-picture project with multiple streams of Apple
+                  ProRes 422 video at 3840x2160 resolution and 29.97 frames per
+                  second. Performance tests are conducted using specific
+                  computer systems and reflect the approximate performance of
+                  MacBook Pro.
+                </li>
+                <li>
+                  Testing conducted by Apple in September and October 2023 using
+                  pre-production 16-inch MacBook Pro systems with Apple M3 Max,
+                  16-core CPU, 40-core GPU, 128GB of RAM and 8TB SSD. Final Cut
+                  Pro 10.6.9 tested using a 1-minute picture-in-picture project
+                  with multiple streams of Apple ProRes 422 video at 8192x4320
+                  resolution and 30 frames per second, as well as a 1-minute
+                  picture-in-picture project with multiple streams of Apple
+                  ProRes 422 video at 3840x2160 resolution and 29.97 frames per
+                  second. Performance tests are conducted using specific
+                  computer systems and reflect the approximate performance of
+                  MacBook Pro.
+                </li>
+              </React.Fragment>
+            )}
+          </ul>
           {hasStickyFooter ? (
             <>
               <p>
@@ -184,22 +184,29 @@ export const Footer = () => {
             <span
               className="as-globalfooter-breadcrumbs-home-icon"
               aria-hidden="true"
-            ></span>
-            <span className="as-globalfooter-breadcrumbs-home-label">
-              Apple
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="1.3em"
+                height="1.3em"
+                viewBox="0 0 256 340"
+                className="fill-[#4D4D4D] hover:fill-black"
+              >
+                <path d="M213.803 167.03c.442 47.58 41.74 63.413 42.197 63.615c-.35 1.116-6.599 22.563-21.757 44.716c-13.104 19.153-26.705 38.235-48.13 38.63c-21.05.388-27.82-12.483-51.888-12.483c-24.061 0-31.582 12.088-51.51 12.871c-20.68.783-36.428-20.71-49.64-39.793c-27-39.033-47.633-110.3-19.928-158.406c13.763-23.89 38.36-39.017 65.056-39.405c20.307-.387 39.475 13.662 51.889 13.662c12.406 0 35.699-16.895 60.186-14.414c10.25.427 39.026 4.14 57.503 31.186c-1.49.923-34.335 20.044-33.978 59.822M174.24 50.199c10.98-13.29 18.369-31.79 16.353-50.199c-15.826.636-34.962 10.546-46.314 23.828c-10.173 11.763-19.082 30.589-16.678 48.633c17.64 1.365 35.66-8.964 46.64-22.262"></path>
+              </svg>
             </span>
           </a>
-          <span>&gt;</span>
+          <span>&rsaquo;</span>
           <a href="#" className="flex items-center">
             <span className="as-globalfooter-breadcrumbs-home-label">Mac</span>
           </a>
-          <span>&gt;</span>
+          <span>&rsaquo;</span>
           <a href="#" className="flex items-center">
             <span className="as-globalfooter-breadcrumbs-home-label">
               Macbook Pro
             </span>
           </a>
-          <span>&gt;</span>
+          <span>&rsaquo;</span>
           <a href="#" className="flex items-center">
             <span className="as-globalfooter-breadcrumbs-home-label">
               Buy Macbook Pro

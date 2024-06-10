@@ -1,8 +1,7 @@
-/* eslint-disable @next/next/no-img-element */
+import { clsx } from "clsx";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, ChangeEvent, useRef } from "react";
-import { clsx } from "clsx";
 import { AppLayout } from "../components/AppLayout";
 import { ProductCard } from "../components/ProductCard";
 import { ConfigureCard } from "../components/ConfigureCard";
@@ -11,8 +10,10 @@ import {
   chip_configs,
   pricing_configs,
 } from "../../../utils/db.json";
-
-import { useHasStickyFooterStore } from "../../../utils/store";
+import {
+  useHasStickyFooterStore,
+  useConfigurationBannerStore,
+} from "../../../utils/store";
 
 interface Product {
   id: string;
@@ -39,8 +40,10 @@ export default function Home() {
   const { id } = router.query;
   const productId = searchParams.get("id");
   const sizeSelectRef = useRef<HTMLDivElement>(null);
+
   //ZUSTAND GLOBAL STATE MANAGEMENT
   const { setHasStickyFooter } = useHasStickyFooterStore();
+  const { setBannerConfig } = useConfigurationBannerStore();
 
   //FOR PRODUCTS PAGE
   const [size, setSize] = useState<string>("");
@@ -118,58 +121,8 @@ export default function Home() {
               }
             });
           });
-          // pricing_configs.forEach((config: any) => {
-          //   Object.keys(config).forEach((key) => {
-          //     if (key == chip) {
-
-          //       const routerMemory = match[6];
-          //       const routerStorage = match[7];
-          //       if (
-          //         Object.keys(config[key].memory).some(
-          //           (memoryKey) =>
-          //             memoryKey.toLowerCase().split(" ")[0] ===
-          //             routerMemory.toLowerCase(),
-          //         ) &&
-          //         Object.keys(config[key].storage).some(
-          //           (storageKey) =>
-          //             storageKey.toLowerCase().split(" ")[0] ===
-          //             routerStorage.toLowerCase(),
-          //         )
-          //       ) {
-          //         foundMatchingConfig = true;
-          //         currConfig = config[key];
-          //         if (config[key].chip && Object.keys(config[key].chip)) {
-          //           foundMatchingConfig = false;
-          //           currConfig = {};
-          //           const routerCpu = match[4];
-          //           const routerGpu = match[5];
-          //           //check
-          //           Object.keys(config[key].chip).forEach((chip) => {
-          //             const tempArr = chip.match(/\b\d+\b/g) || [];
-          //             if (routerCpu == tempArr[0] && routerGpu == tempArr[1]) {
-          //               //correct
-          //               foundMatchingConfig = true;
-          //               currConfig = config[key];
-          //               return;
-          //             }
-          //           });
-          //         }
-          //         return;
-          //       }
-          //     }
-          //   });
-          // });
 
           if (foundMatchingConfig) {
-            // console.log(
-            //   match[1],
-            //   match[2],
-            //   match[3],
-            //   match[4],
-            //   match[5],
-            //   match[6],
-            //   match[7],
-            // );
             setHasStickyFooter(true);
             setIsProductPage(true);
             setProductSize(match[1]);
@@ -181,7 +134,19 @@ export default function Home() {
             setProductStorage(match[7]);
             setProductConfig(currConfig);
             if (currConfig.power) {
-              setProductPower(Object.keys(currConfig.power)[0]);
+              if (
+                (match[3] == "m3-pro" &&
+                  match[4] == "12" &&
+                  match[5] == "18") ||
+                (match[3] == "m3-max" &&
+                  match[4] == "14" &&
+                  match[5] == "30") ||
+                (match[3] == "m3-max" && match[4] == "16" && match[5] == "40")
+              ) {
+                setProductPower(Object.keys(currConfig.power)[1]);
+              } else {
+                setProductPower(Object.keys(currConfig.power)[0]);
+              }
             }
             computeTotalPrice();
           } else {
@@ -192,20 +157,24 @@ export default function Home() {
           const data = id.split("-");
           setSize(data[0]);
           setChip(data.slice(2).join("-"));
-
-          setMacbooks((prevMacbooks) => {
-            let filteredMacbooks = products.filter(
-              (product) => product.size === `${data[0]}-${data[1]}`,
-            );
-
-            if (data.slice(2).join("-").length > 0) {
-              filteredMacbooks = filteredMacbooks.filter(
-                (product) => product.chip === data.slice(2).join("-"),
+          setMacbooks([]);
+          setIsProductPage(false);
+          setHasStickyFooter(false);
+          // After a brief delay, update macbooks with the filtered results
+          setTimeout(() => {
+            setMacbooks((prevMacbooks) => {
+              let filteredMacbooks = products.filter(
+                (product) => product.size === `${data[0]}-${data[1]}`,
               );
-            }
 
-            return filteredMacbooks;
-          });
+              if (data.slice(2).join("-").length > 0) {
+                filteredMacbooks = filteredMacbooks.filter(
+                  (product) => product.chip === data.slice(2).join("-"),
+                );
+              }
+              return filteredMacbooks;
+            });
+          }, 1);
         }
       }
     }
@@ -310,20 +279,43 @@ export default function Home() {
           }
 
           //EDGE CASES: handle memory selections
-          if (chipMatch![0] == "M3 Max" && cpuMatch![0] == "14" && gpuMatch![1] == "30") {
-            const memory_index = parts.findIndex((part) => part.includes("memory"));
+          if (
+            chipMatch![0] == "M3 Max" &&
+            cpuMatch![0] == "14" &&
+            gpuMatch![1] == "30"
+          ) {
+            const memory_index = parts.findIndex((part) =>
+              part.includes("memory"),
+            );
             if (memory_index !== -1) {
               parts[memory_index - 1] = "36gb";
             }
+            //banner
+            setBannerConfig(
+              "Based on your configuration, we’ve selected 36GB unified memory. Please review this selection.",
+            );
           }
 
-          if (chipMatch![0] == "M3 Max" && cpuMatch![0] == "16" && gpuMatch![1] == "40") {
-            const memory_index = parts.findIndex((part) => part.includes("memory"));
+          if (
+            chipMatch![0] == "M3 Max" &&
+            cpuMatch![0] == "16" &&
+            gpuMatch![1] == "40"
+          ) {
+            const memory_index = parts.findIndex((part) =>
+              part.includes("memory"),
+            );
             if (memory_index !== -1) {
               parts[memory_index - 1] = "48gb";
             }
+            //banner
+            setBannerConfig(
+              "Based on your configuration, we’ve selected 48GB unified memory. Please review this selection.",
+            );
           }
 
+          setTimeout(() => {
+            setBannerConfig("");
+          }, 2000);
           const newUrl = parts.join("-") + `?id=${productId}`;
           router.push(newUrl, undefined, { shallow: true });
         }
@@ -706,7 +698,30 @@ export default function Home() {
                   />
                   <div className="mb-9 py-6">
                     <span className="text-[#06C] hover:underline">
-                      <a href="https://contactretail.apple.com">View gallery</a>
+                      <a
+                        href="https://contactretail.apple.com"
+                        className="flex items-center justify-center"
+                      >
+                        View gallery
+                        <span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-circle-plus ml-2"
+                          >
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M8 12h8" />
+                            <path d="M12 8v8" />
+                          </svg>
+                        </span>
+                      </a>
                     </span>
                   </div>
                   <div className="flex font-medium">
@@ -772,7 +787,7 @@ export default function Home() {
                   <p>{productMemory.toUpperCase()} unified memory</p>
                   <p>{productStorage.toUpperCase()} SSD Storage</p>
                   <p>{productSize}-inch Liquid Retina XDR display²</p>
-                  <p>USB-C Power Adapter</p>
+                  <p>{productPower}</p>
                   <p>
                     Three Thunderbolt 4 ports, HDMI port, SDXC card slot,
                     headphone jack, MagSafe 3 port
@@ -789,7 +804,30 @@ export default function Home() {
                     computer. Or recycle it for free.**
                   </p>
                   <span className="text-[#06C] hover:underline">
-                    <a href="https://contactretail.apple.com">Get started</a>
+                    <a
+                      href="https://contactretail.apple.com"
+                      className="flex items-center"
+                    >
+                      Get started
+                      <span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-circle-plus ml-1"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 12h8" />
+                          <path d="M12 8v8" />
+                        </svg>
+                      </span>
+                    </a>
                   </span>
                 </div>
                 <hr />
@@ -801,8 +839,29 @@ export default function Home() {
                         Chip (Processor)
                       </p>
                       <span className="text-[#06C] hover:underline">
-                        <a href="https://contactretail.apple.com">
+                        <a
+                          href="https://contactretail.apple.com"
+                          className="flex items-center"
+                        >
                           Which chip is right for you?
+                          <span>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              className="lucide lucide-circle-plus ml-2"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <path d="M8 12h8" />
+                              <path d="M12 8v8" />
+                            </svg>
+                          </span>
                         </a>
                       </span>
                       <div className="mt-3 space-y-3">
@@ -827,8 +886,8 @@ export default function Home() {
                                   "w-1/2 text-right text-base",
                                   value == 0 && "hidden",
                                   key.toLowerCase() ==
-                                  `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase() &&
-                                  "hidden",
+                                    `Apple ${productChip.replace("-", " ")} chip with ${productCPU}‑core CPU, ${productGPU}‑core GPU and 16‑core Neural Engine`.toLowerCase() &&
+                                    "hidden",
                                 )}
                               >
                                 + RM{" "}
@@ -843,25 +902,46 @@ export default function Home() {
                       {["4", "5", "6", "7", "8", "9"].includes(
                         productConfig.id,
                       ) && (
-                          <div className="p-4 font-light text-[#78787E]">
-                            <p>
-                              Select M3 Max with 30-core GPU to add 96GB of
-                              memory.
-                            </p>
-                            <p>
-                              Select M3 Max with 40-core GPU to add 48GB, 64GB, or
-                              128GB.
-                            </p>
-                          </div>
-                        )}
+                        <div className="p-4 font-light text-[#78787E]">
+                          <p>
+                            Select M3 Max with 30-core GPU to add 96GB of
+                            memory.
+                          </p>
+                          <p>
+                            Select M3 Max with 40-core GPU to add 48GB, 64GB, or
+                            128GB.
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
                 <div className="mt-3">
                   <p className="text-base font-semibold">Memory</p>
                   <span className="text-[#06C] hover:underline">
-                    <a href="https://contactretail.apple.com">
+                    <a
+                      href="https://contactretail.apple.com"
+                      className="flex items-center"
+                    >
                       How much memory is right for you?
+                      <span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-circle-plus ml-2"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 12h8" />
+                          <path d="M12 8v8" />
+                        </svg>
+                      </span>
                     </a>
                   </span>
                   <div className="mt-3 space-y-3">
@@ -887,11 +967,11 @@ export default function Home() {
                           }
                           onClick={() => handleMemoryConfigChange(key)}
                           className={clsx(
-                            "flex min-h-20 w-full items-center justify-between rounded-xl border p-4 text-left disabled:opacity-40",
+                            "flex min-h-20 w-full items-center justify-between rounded-xl p-4 text-left disabled:opacity-40",
                             productMemory.toLowerCase() ==
                               key.toLowerCase().split(" ")[0]
                               ? "border-2 border-[#0071E3]"
-                              : "border-[#86868B]",
+                              : "border border-[#86868B]",
                           )}
                         >
                           <p className="w-1/2 text-base font-medium">{key}</p>
@@ -899,21 +979,21 @@ export default function Home() {
                             className={clsx(
                               "w-1/2 text-right text-base",
                               productMemory.toLowerCase() ==
-                              key.toLowerCase().split(" ")[0] && "hidden",
+                                key.toLowerCase().split(" ")[0] && "hidden",
                             )}
                           >
                             {value >
-                              productConfig.memory[
+                            productConfig.memory[
                               `${productMemory.toUpperCase()} unified memory`
-                              ]
+                            ]
                               ? "+"
                               : "-"}
                             RM{" "}
                             {Math.abs(
                               parseFloat(value) -
-                              productConfig.memory[
-                              `${productMemory.toUpperCase()} unified memory`
-                              ],
+                                productConfig.memory[
+                                  `${productMemory.toUpperCase()} unified memory`
+                                ],
                             )
                               .toFixed(2)
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -925,19 +1005,40 @@ export default function Home() {
                   {["4", "5", "6", "7", "8", "9"].includes(
                     productConfig.id,
                   ) && (
-                      <div className="p-4 font-light text-[#78787E]">
-                        <p>
-                          96GB available with M3 Max with 30-core GPU. 48GB, 64GB,
-                          or 128GB available with M3 Max with 40-core GPU.
-                        </p>
-                      </div>
-                    )}
+                    <div className="p-4 font-light text-[#78787E]">
+                      <p>
+                        96GB available with M3 Max with 30-core GPU. 48GB, 64GB,
+                        or 128GB available with M3 Max with 40-core GPU.
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="mt-3">
                   <p className="text-base font-semibold">Storage</p>
                   <span className="text-[#06C] hover:underline">
-                    <a href="https://contactretail.apple.com">
+                    <a
+                      href="https://contactretail.apple.com"
+                      className="flex items-center"
+                    >
                       How much storage is right for you?
+                      <span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-circle-plus ml-2"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 12h8" />
+                          <path d="M12 8v8" />
+                        </svg>
+                      </span>
                     </a>
                   </span>
                   <div className="mt-3 space-y-3">
@@ -951,11 +1052,11 @@ export default function Home() {
                             ["8tb"].includes(key.toLowerCase().split(" ")[0])
                           }
                           className={clsx(
-                            "flex min-h-20 w-full items-center justify-between rounded-xl border p-4 text-left disabled:opacity-40",
+                            "flex min-h-20 w-full items-center justify-between rounded-xl p-4 text-left disabled:opacity-40",
                             productStorage.toLowerCase() ==
                               key.toLowerCase().split(" ")[0]
                               ? "border-2 border-[#0071E3]"
-                              : "border-[#86868B]",
+                              : "border border-[#86868B]",
                           )}
                         >
                           <p className="w-1/2 text-base font-medium">{key}</p>
@@ -963,21 +1064,21 @@ export default function Home() {
                             className={clsx(
                               "w-1/2 text-right text-base",
                               productStorage.toLowerCase() ==
-                              key.toLowerCase().split(" ")[0] && "hidden",
+                                key.toLowerCase().split(" ")[0] && "hidden",
                             )}
                           >
                             {value >
-                              productConfig.storage[
+                            productConfig.storage[
                               `${productStorage.toUpperCase()} SSD Storage`
-                              ]
+                            ]
                               ? "+"
                               : "-"}{" "}
                             RM{" "}
                             {Math.abs(
                               parseFloat(value) -
-                              productConfig.storage[
-                              `${productStorage.toUpperCase()} SSD Storage`
-                              ],
+                                productConfig.storage[
+                                  `${productStorage.toUpperCase()} SSD Storage`
+                                ],
                             )
                               .toFixed(2)
                               .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -989,10 +1090,10 @@ export default function Home() {
                   {["4", "5", "7", "8", "9", "10"].includes(
                     productConfig.id,
                   ) && (
-                      <p className="p-4 text-[#828286]">
-                        8TB available with M3 Max chip.
-                      </p>
-                    )}
+                    <p className="p-4 text-[#828286]">
+                      8TB available with M3 Max chip.
+                    </p>
+                  )}
                 </div>
                 {productConfig.power &&
                   Object.keys(productConfig.power).length > 0 && (
@@ -1003,13 +1104,6 @@ export default function Home() {
                           Which power adapter is right for you?
                         </a>
                       </span>
-                      {/* {
-                        ["4", "5", "6", "7", "8", "9"].includes(productConfig.id) &&
-                        <div className="font-light text-xs bg-[#FAFAFC] p-3 rounded-lg border-[#D2D2D7] border mt-4">
-                            <p>Based on your configuration, we’ve selected 70W USB-C Power Adapter.</p>
-                            <p>Please review this selection.</p>
-                        </div>
-                      } */}
                       <div className="mt-3 space-y-3">
                         {Object.entries(productConfig.power).map(
                           ([key, value]: [string, any]) => (
@@ -1026,10 +1120,10 @@ export default function Home() {
                                   key.split(" ")[0] == "70W")
                               }
                               className={clsx(
-                                "flex min-h-20 w-full items-center justify-between rounded-xl border border-[#86868B] p-4 disabled:opacity-40",
+                                "flex min-h-20 w-full items-center justify-between rounded-xl p-4 disabled:opacity-40",
                                 productPower == key
                                   ? "border-2 border-[#0071E3]"
-                                  : "border-[#86868B]",
+                                  : "border border-[#86868B]",
                               )}
                             >
                               <p className="w-1/2 text-left text-base font-medium">
@@ -1038,12 +1132,25 @@ export default function Home() {
                               <p
                                 className={clsx(
                                   "w-1/2 text-right text-base",
-                                  productPower !== key && "hidden",
+                                  key === "70W USB-C Power Adapter" &&
+                                    (productChip === "m3-max" ||
+                                      (productChip === "m3-pro" &&
+                                        productCPU === "12")) &&
+                                    "hidden",
+
+                                  productPower === key &&
+                                    !(
+                                      productChip === "m3-max" ||
+                                      (productChip === "m3-pro" &&
+                                        productCPU === "12")
+                                    ) &&
+                                    "hidden",
                                 )}
                               >
-                                {(productChip == "m3-max") ||
-                                  (productChip == "m3-pro" &&
-                                    productCPU == "12") && key.split(" ")[0] == "96W" ? (
+                                {productChip == "m3-max" ||
+                                (productChip == "m3-pro" &&
+                                  productCPU == "12" &&
+                                  key.split(" ")[0] == "96W") ? (
                                   "Included"
                                 ) : (
                                   <>
@@ -1053,7 +1160,7 @@ export default function Home() {
                                     RM{" "}
                                     {Math.abs(
                                       parseFloat(value) -
-                                      productConfig.power[productPower],
+                                        productConfig.power[productPower],
                                     )
                                       .toFixed(2)
                                       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
@@ -1069,7 +1176,30 @@ export default function Home() {
                 <div className="mt-3">
                   <p className="text-base font-semibold">Keyboard Language</p>
                   <span className="text-[#06C] hover:underline">
-                    <a href="https://contactretail.apple.com">Learn more</a>
+                    <a
+                      href="https://contactretail.apple.com"
+                      className="flex items-center"
+                    >
+                      Learn more
+                      <span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-circle-plus ml-2"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 12h8" />
+                          <path d="M12 8v8" />
+                        </svg>
+                      </span>
+                    </a>
                   </span>
                   <div className="relative mt-3">
                     <select
@@ -1100,9 +1230,9 @@ export default function Home() {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="#6e6e73"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                       className="lucide lucide-chevron-down absolute inset-y-[1.3rem] right-3"
                     >
                       <path d="m6 9 6 6 6-6" />
@@ -1119,14 +1249,26 @@ export default function Home() {
                     Saves, then come back anytime and pick up right where you
                     left off.
                   </p>
-                  <span className="text-[#06C] hover:underline">
+                  <p className="flex items-center text-[#06C] hover:underline">
+                    <span>
+                      <svg
+                        width="21"
+                        height="21"
+                        style={{ fill: "#06C" }}
+                        role="img"
+                        aria-hidden="true"
+                      >
+                        <path fill="none" d="M0 0h21v21H0z"></path>
+                        <path d="M12.8 4.25a1.202 1.202 0 0 1 1.2 1.2v10.818l-2.738-2.71a1.085 1.085 0 0 0-1.524 0L7 16.269V5.45a1.202 1.202 0 0 1 1.2-1.2h4.6m0-1H8.2A2.2 2.2 0 0 0 6 5.45v11.588a.768.768 0 0 0 .166.522.573.573 0 0 0 .455.19.644.644 0 0 0 .38-.128 5.008 5.008 0 0 0 .524-.467l2.916-2.885a.084.084 0 0 1 .118 0l2.916 2.886a6.364 6.364 0 0 0 .52.463.628.628 0 0 0 .384.131.573.573 0 0 0 .456-.19.768.768 0 0 0 .165-.522V5.45a2.2 2.2 0 0 0-2.2-2.2Z"></path>
+                      </svg>
+                    </span>
                     <a href="https://contactretail.apple.com">Save for later</a>
-                  </span>
+                  </p>
                 </div>
               </div>
             </div>
             <div className="relative mx-auto mt-10 flex h-[422px] w-full items-center justify-center bg-black lg:max-w-7xl">
-              <div className="absolute left-3 z-10 ml-4 text-white md:left-20 lg:left-36">
+              <div className="absolute left-3 z-10 ml-4 hidden text-white md:left-4 md:block lg:left-36 lg:block">
                 <img
                   src="/apple-tv-plus-logo.png"
                   alt="Apple TV"
@@ -1179,8 +1321,26 @@ export default function Home() {
                     <p className="text-base font-medium">Ships:</p>
                     <p className="text-sm">In stock</p>
                     <p className="text-sm">Free Shipping</p>
-                    <p className="text-sm text-[#06C] hover:underline">
+                    <p className="flex items-center text-sm text-[#06C] hover:underline">
                       Get delivery dates
+                      <span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-circle-plus ml-2"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 12h8" />
+                          <path d="M12 8v8" />
+                        </svg>
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -1191,7 +1351,7 @@ export default function Home() {
                       {totalPrice
                         .toFixed(2)
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                      <span>or</span>
+                      <span> or</span>
                     </p>
                     <p>
                       RM{" "}
@@ -1200,8 +1360,26 @@ export default function Home() {
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                       /mo. for 24 mo.*
                     </p>
-                    <p className="text-sm font-light text-[#06C] hover:underline">
-                      Explore monthly instalment options &gt;
+                    <p className="flex items-center justify-end text-sm font-light text-[#06C] hover:underline">
+                      Explore monthly instalment options &rsaquo;{" "}
+                      <span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-circle-plus ml-2"
+                        >
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M8 12h8" />
+                          <path d="M12 8v8" />
+                        </svg>
+                      </span>
                     </p>
                   </div>
                   <button className="rounded-lg bg-[#0071E3] px-4 py-2 text-sm font-light text-white">
